@@ -1,0 +1,416 @@
+#: import icon kivy.garden.iconfonts.icon
+<Label>:
+    color:0,0,1,1
+    bold: True
+<Button>:
+    # font_size:10
+    color:1,1,1,1
+    bold: True
+    # background_color:[0,0,1,0.5]
+    # size_hint:0.3, 0.5     # width, height in %
+
+<IconButton@Button>:
+    canvas:
+        Rectangle:
+            source:'trashcan.png'
+            pos: self.pos
+            size: 30,30
+
+
+<StrokeButton@Button>:
+    background_color: (0,0,0,0)
+    background_normal: ''
+    back_color: (1,1,1,1)
+    border_radius: 12
+    color: self.back_color
+    bold: True
+    canvas.before:
+        Color:
+            rgba: self.back_color
+        Line:
+            circle: (self.pos[0] + self.width*0.5, self.pos[1] + self.height*0.5, self.border_radius)
+            width: 1.1
+
+<RoundButton@Button>:
+    text: ''
+    bold: True
+    font_size: "25sp"
+    background_color: 0, 0, 0, 0
+    background_normal: ''
+    size_hint_x: None
+    width: 40
+    size_hint_y: None
+    height: 40
+    # back_color: (1,1,1,0)
+    border_radius: [20]
+    canvas.before:
+        Color:
+            rgba: (0,0,0,0) if self.state == "normal" else (1,1,1,0.5)
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+            radius: self.border_radius
+
+<AddButton@Button>:
+    text: '+'
+    bold: True
+    font_size: "25sp"
+    background_color: 0, 0, 0, 0
+    background_normal: ''
+    size_hint_x: None
+    width: 40
+    size_hint_y: None
+    height: 40
+    # back_color: (1,1,1,0)
+    border_radius: [20]
+    canvas.before:
+        Color:
+            rgba: (0,0,0,0) if self.state == "normal" else (1,1,1,0.5)
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+            radius: self.border_radius
+
+<MenuButton@ToggleButton>:
+    background_color: (1,1,1,1) if self.state == 'normal' else (0,0.6,0,1)
+    background_normal: ''
+    group: 'menu'
+    bold: True
+    color: (0,0.4,0,1) if self.state =='normal' else (1,1,1,1)
+    size_hint_x: None
+    width: 80
+
+<MainWindow>:
+    sm:sm
+    BoxLayout:
+        canvas:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                size: self.size
+                pos: self.pos
+        orientation: "vertical"
+        ScreenManager:
+            id: sm
+            HomeWindow:
+            ReceiptsWindow:
+            ChartWindow:
+            CalendarWindow:
+            SettingsWindow:
+            ListWindow:
+            CatalogueWindow:
+        GridLayout:
+            homeBtn:homeBtn
+            receiptBtn:receiptBtn
+            chartBtn:chartBtn
+            calendarBtn:calendarBtn
+            settingsBtn:settingsBtn
+            cols: 5
+            rows: 1
+            size_hint_y: None
+            height: 80
+
+            MenuButton:
+                id:homeBtn
+                state:'down'
+                homesource: "icons/home-white.png" if self.state=='down' else "icons/home-green.png"
+                on_state:
+                    sm.current = "HomeWindow"
+                Image:
+                    source: homeBtn.homesource
+                    width: 30
+                    height: 30
+                    size_hint_y: None
+                    size_hint_x: None
+                    y: self.parent.y + .8* self.parent.height -.5 * self.parent.width/self.image_ratio
+                    x: self.parent.x+ .8* self.parent.height -.5 * self.parent.width/self.image_ratio
+                    keep_ratio: True
+                    allow_stretch: True
+
+            MenuButton:
+                id: chartBtn
+                text: 'Charts'
+                on_state:
+                    sm.current = "ListWindow"
+            MenuButton:
+                id: receiptBtn
+                text: 'Receipt'
+                on_state:
+                    sm.current = "CatalogueWindow"
+            MenuButton:
+                id: calendarBtn
+                text: 'Calendar'
+                on_state:
+                    sm.current = "CalendarWindow"
+            MenuButton:
+                id: settingsBtn
+                text: ''
+                homesource: "icons/settings-white.png" if self.state=='down' else "icons/settings-green.png"
+                on_state:
+                    sm.current = "SettingsWindow"
+                Image:
+                    source: settingsBtn.homesource
+                    width: 30
+                    height: 30
+                    size_hint_y: None
+                    size_hint_x: None
+                    y: self.parent.y + .8* self.parent.height -.5 * self.parent.width/self.image_ratio
+                    x: self.parent.x+ .8* self.parent.height -.5 * self.parent.width/self.image_ratio
+                    keep_ratio: True
+                    allow_stretch: True
+<HomeWindow>:
+    name:"HomeWindow"
+    list:list
+    canvas:
+        Color:
+            rgba: 1, 1, 1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    GridLayout:
+        cols: 1
+        # rows:
+        canvas:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        GridLayout:
+            cols:1
+            # rows:
+            size_hint_y: None
+            height: 130
+            row_default_height: 30
+            row_force_default: True
+            canvas:
+                Color:
+                    rgba: 0, 0.4, 0, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            Label:
+                text:""
+            Label:
+                text: "My shopping lists"
+                font_size: "20sp"
+                color: 1, 1, 1, 1
+                # bold: True
+            Label:
+                text:""
+            GridLayout:
+                cols: 3
+                # rows:
+                Label:
+                    text:""
+                    size_hint_x: None
+                    width: 10
+                RoundButton:
+                    text: '+'
+                    id: listBtn
+                    on_press:
+                        root.listBtn(list.text)
+                    on_release:
+                        root.listBtnRelease()
+                TextInput:
+                    id: list
+                    text:"New list..."
+                    foreground_color: 1,1,1,1
+                    font_size:'20sp'
+                    bold: True
+                    multiline:False
+                    size_hint_y: None
+                    height: self.minimum_height
+                    size_hint_x:None
+                    width: 250
+                    background_color: (0,0,1,0)
+                    cursor_color: (1,1,1,1)
+                    on_focus: self.text = ""
+                    on_text_validate:
+                        #addBtn.on_press = True
+                        root.addBtn(item.text)
+                        # addBtn.on_release=True
+                    # canvas.before:
+                    #     Color:
+                    #         rgba: (1,1,1,1)
+                    #     Line:
+                    #         points: self.x + 4, self.y + 5, self.x + 240 , self.y + 5
+                    #         width: 1
+        ScrollView:
+            do_scroll_x: False
+            do_scroll_y: True
+            GridLayout:
+                cols: 1
+                # rows:
+                Button:
+                    text: "List 1"
+                    on_press:
+                        # root.enterList()
+                        root.manager.current = 'ListWindow'
+                        root.manager.transition.direction = "left"
+
+<ListWindow>:
+    name:"ListWindow"
+    item:item
+    listContainer:listContainer
+    canvas:
+        Color:
+            rgba: 1, 1, 1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    GridLayout: # main window
+        cols: 1
+        # size: root.width - 300, root.height - 300
+        # pos: 150, 150
+        GridLayout: # input plus chart button
+            cols:1
+            rows:4
+            size_hint_y: None
+            height: 150
+            row_default_height: 30
+            row_force_default: True
+            canvas.before:
+                Color:
+                    rgba: 0, 0.4, 0, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            Label:
+                text:""
+            GridLayout: # title and info button
+                cols: 5
+                rows: 1
+                Label:
+                    text: ''
+                    size_hint_x: None
+                    width: 10
+                RoundButton:
+                    text:'<'
+                    on_release:
+                        root.manager.current = "HomeWindow"
+                        root.manager.transition.direction = "right"
+
+                Label:
+                    text: "Groceries"
+                    color: 1,1,1,1
+                    bold: True
+                    font_size:'20sp'
+                    size_hint_y: None
+                    height: 30
+                    # size_hint_y:None
+                    # width: 460
+                StrokeButton:
+                    text:"i"
+                    # color: 0,0,1,0
+                    size_hint_x: None
+                    width: 40
+                    on_press: root.chartBtn()
+                        # Image:
+                        #     source: "pie.png"
+                        #     width: self.parent.width
+                        #     height: self.parent.height
+                        #     size_hint_y: None
+                        #     size_hint_x: None
+                        #     y: self.parent.y + .8* self.parent.height -.5 * self.parent.width/self.image_ratio
+                        #     x: self.parent.x
+                        #     keep_ratio: True
+                        #     allow_stretch: True
+                Label:
+                    text: ''
+                    size_hint_x: None
+                    width: 10
+            Label:
+                text:""
+            GridLayout: # add button, text input...
+                cols: 5
+                rows: 1
+                # size:root.width, 100
+                Label:
+                    text:''
+                    size_hint_x: None
+                    width: 10
+                RoundButton:
+                    text:"+"
+                    id: addBtn
+                    # size_hint_x: None
+                    # width: 50
+                    on_press:
+                        root.addBtn(item.text)
+                    on_release:
+                        root.addBtnRelease()
+                AnchorLayout:
+                    anchor_y: 'top'
+                    TextInput:
+                        id: item
+                        text:"Add an item..."
+                        on_focus: self.text = ""
+                        on_text_validate:
+                            #addBtn.on_press = True
+                            root.addBtn(item.text)
+                            # addBtn.on_release=True
+                        foreground_color: 1,1,1,1
+                        font_size:'17sp'
+                        bold: True
+                        multiline:False
+                        size_hint_y: None
+                        height: self.minimum_height
+                        size_hint_x:None
+                        width: 250
+                        background_color: (0,0,1,0)
+                        cursor_color: (1,1,1,1)
+                        canvas.before:
+
+                            Line:
+                                points: self.x + 4, self.y + 5, self.x + 240 , self.y + 5
+                                width: 1
+                Button:
+                    text:"CA"
+                    # color:1,0,0,1
+                    size_hint_x: None
+                    width: 50
+                    background_color:[1,0,0,1]
+                    # opacity:1
+                    on_press:
+                        root.emptyBtn()
+                Button:
+                    text:"items"
+                    size_hint_x: None
+                    width: 50
+                    on_press:
+                        root.catalogueBtn()
+                        root.manager.current = "CatalogueWindow"
+                        root.manager.transition.direction = "left"
+        ScrollView:
+            do_scroll_x: False
+            do_scroll_y: True
+            # size: self.size
+            # canvas:
+            #     Color:
+            #         rgba: 1, 1, 1, 1
+            #     Rectangle:
+            #         pos: self.pos
+            #         size: self.size
+
+            GridLayout:
+                cols: 2
+                id: listContainer
+                size_hint_y: None
+                height: self.minimum_height
+                row_default_height: '30dp'
+                row_force_default: True
+                canvas:
+                    Color:
+                        rgba: 0, 0, 1, 1
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+
+<CatalogueWindow>
+    name: "CatalogueWindow"
+    Button:
+        text:"Back"
+        on_press:
+            root.manager.current = "ListWindow"
+            root.manager.transition.direction = "right"
