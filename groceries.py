@@ -11,6 +11,7 @@ from kivy.uix.button import Button
 from kivy.uix.popup import Popup
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.relativelayout import RelativeLayout
 from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.togglebutton import ToggleButton
@@ -29,11 +30,12 @@ class HomeWindow(Screen):
     homeBtn = OptionProperty('normal')
     homeBtn = 'down'
     def listBtn(self, textinput):
-        pass
+        self.listGrid.add_widget(Label(text=self.list.text, color=(0,0.4,0,1),bold=True,text_size = [360, 30] , halign="left",valign="middle"))
+
     def listBtnRelease(self):
         self.list.text = "New list..."
 
-class ReceiptsWindow(Screen):
+class RecipesWindow(Screen):
     pass
 
 class ChartWindow(Screen):
