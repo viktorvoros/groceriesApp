@@ -1,0 +1,268 @@
+<ListItemWithCounter>:
+    canvas.before:
+        Color:
+            rgba: 1,1,1,1
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [3]
+            # border: [10,10,10,10]
+    # MDCheckbox:
+
+    # on_press:
+        # root.parent.parent.parent.parent.parent.rmv()
+<ListItemWithCheckbox>:
+    canvas.before:
+        Color:
+            rgba: 1,1,1,1
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [3]
+    IconRightWidget:
+        icon: 'food'
+
+    LeftCheckbox:
+        # on_active: app.root.rmvItem()
+
+<ScreenManagementHome>:
+    id: sm
+    HomeWindow:
+    ListWindow:
+
+<MainWindow>:
+    BoxLayout:
+        orientation:'vertical'
+        # MDToolbar:
+        #     # title: 'My lists'
+        #     md_bg_color: 0, .4, 0, 1
+        #     specific_text_color: 1, 1, 1, 1
+        #     size_hint_y: None
+        #     height: 20
+
+        MDBottomNavigation:
+            panel_color: 1, 1, 1, 1
+
+            MDBottomNavigationItem:
+                name: 'HomeWindow'
+                text: 'Home'
+                icon: 'home'
+                ScreenManagementHome:
+
+            MDBottomNavigationItem:
+                name: 'ChartWindow'
+                text: 'Graphs'
+                icon: 'chart-bar'
+                ChartWindow:
+
+            MDBottomNavigationItem:
+                name: 'RecipesWindow'
+                text: 'Recipes'
+                icon: 'food'
+                RecipesWindow:
+
+            MDBottomNavigationItem:
+                name: 'CalendarWindow'
+                text: 'Calendar'
+                icon: 'calendar'
+                CalendarWindow:
+
+            MDBottomNavigationItem:
+                name: 'RecipesWindow'
+                text: 'Settings'
+                icon: 'settings'
+                SettingsWindow:
+
+<HomeWindow>:
+    name: 'HomeWindow'
+    listGrid:listGrid
+    list:list
+    GridLayout:
+        cols:1
+        MDToolbar:
+            title: 'My lists'
+            halign: 'center'
+            md_bg_color: 0, .4, 0, 1
+            specific_text_color: 1, 1, 1, 1
+        MDLabel:
+            text:''
+            size_hint_y: None
+            height: 10
+        GridLayout:
+            cols: 3
+            # canvas:
+            #     Color:
+            #         rgba: 0,0.4,0,1
+            #     Rectangle:
+            #         pos: self.pos
+            #         size: self.size
+            MDLabel:
+                text:''
+                size_hint_x: None
+                width: 10
+                size_hint_y: None
+                height: 60
+            GridLayout:
+                cols:1
+                size_hint_y: None
+                height: 60
+                row_default_height: 60
+                row_force_default: True
+                GridLayout:
+                    cols: 3
+                    canvas:
+                        Color:
+                            rgba: 0,0.4,0,1
+                        RoundedRectangle:
+                            pos: self.pos
+                            size: self.size
+                            radius: [3]
+                    Label:
+                        text:""
+                        size_hint_x: None
+                        width: 10
+                    MDIconButton:
+                        icon: "plus"
+                        pos_hint: {"center_x": .5, "center_y": .5}
+                        theme_text_color: "Custom"
+                        text_color: 1,1,1,1
+                        on_release:
+                            root.listBtn(list.text)
+                    MDTextField:
+                        id: listText
+                        hint_text: "New list..."
+                        color_mode: "custom"
+                        current_hint_text_color: 1,1,1,1
+                        line_color_normal: 0.8,0.8,0.8,1
+                        line_color_focus: 1,1,1,1
+                        id: list
+                        on_text_validate:
+                            root.listBtn(list.text)
+            MDLabel:
+                text: ''
+                size_hint_x: None
+                width: 10
+                size_hint_y: None
+                height: 60
+            MDLabel:
+                text: ''
+                size_hint_x: None
+                width: 10
+            ScrollView:
+                do_scroll_x: False
+                do_scroll_y: True
+                MDList:
+                    id: listGrid
+
+            MDLabel:
+                text: ''
+                size_hint_x: None
+                width: 10
+<ListWindow>:
+    name: 'ListWindow'
+    itemGrid:itemGrid
+    itemText:itemText
+    tb:tb
+    # ScreenManager:
+    #     id:sm
+    # listText:listText
+    GridLayout:
+        cols:1
+        MDToolbar:
+            id: tb
+            title: 'Items'
+            # halign: 'center'
+            md_bg_color: 0, .4, 0, 1
+            specific_text_color: 1, 1, 1, 1
+            MDIconButton:
+                icon: "keyboard-backspace"
+                # size_hint_x: 0.1
+                # pos_hint: {"center_x": .5, "center_y": .5}
+                theme_text_color: "Custom"
+                text_color: 1,1,1,1
+                on_release:
+                    root.goBack()
+                # MDLabel:
+                #     # size_hint_x: 0.9
+                #     text: 'Hi'
+                #     color: 1, 1, 1, 1
+        MDLabel:
+            text:''
+            size_hint_y: None
+            height: 10
+        GridLayout:
+            cols: 3
+            MDLabel:
+                text:''
+                size_hint_x: None
+                width: 10
+                size_hint_y: None
+                height: 60
+            GridLayout:
+                cols:1
+                size_hint_y: None
+                height: 60
+                row_default_height: 50
+                row_force_default: True
+                GridLayout:
+                    cols: 3
+                    canvas.before:
+                        Color:
+                            rgba: 0,0.4,0,1
+                        RoundedRectangle:
+                            pos: self.pos
+                            size: self.size
+                            radius: [3]
+                    Label:
+                        text:""
+                        size_hint_x: None
+                        width: 10
+                    MDIconButton:
+                        icon: "plus"
+                        pos_hint: {"center_x": .5, "center_y": .5}
+                        theme_text_color: "Custom"
+                        text_color: 1,1,1,1
+                        on_release:
+                            root.addItem(itemText.text)
+                    MDTextField:
+                        id: itemText
+                        hint_text: "New item..."
+                        color_mode: "custom"
+                        current_hint_text_color: 1,1,1,1
+                        line_color_normal: 0.8,0.8,0.8,1
+                        line_color_focus: 1,1,1,1
+                        # id: item
+                        on_text_validate:
+                            root.addItem(itemText.text)
+            MDLabel:
+                text: ''
+                size_hint_x: None
+                width: 10
+                size_hint_y: None
+                height: 60
+            MDLabel:
+                text: ''
+                size_hint_x: None
+                width: 10
+            ScrollView:
+                do_scroll_x: False
+                do_scroll_y: True
+                MDList:
+                    id: itemGrid
+
+            MDLabel:
+                text: ''
+                size_hint_x: None
+                width: 10
+<ChartWindow>:
+    name: 'ChartWindow'
+    GridLayout:
+        cols: 1
+        MDToolbar:
+            title: 'My graphs'
+            halign: 'center'
+            md_bg_color: 0, .4, 0, 1
+            specific_text_color: 1, 1, 1, 1
+        MDLabel:
+            text:"make graphs here about payment and nutrition"
+            halign:'center'

@@ -1,6 +1,7 @@
 import kivy
 from kivy.app import App
 from kivy.app import runTouchApp
+from kivymd.app import MDApp
 from kivy.uix.widget import Widget
 from kivy.properties import ObjectProperty
 from kivy.properties import StringProperty
@@ -18,7 +19,20 @@ from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.scrollview import ScrollView
 from kivy.core.window import Window
+from kivymd.uix.list import OneLineListItem
+from kivymd.uix.list import ILeftBodyTouch, OneLineAvatarIconListItem
+from kivymd.uix.selectioncontrol import MDCheckbox
+from kivymd.icon_definitions import md_icons
 
+class ListItemWithCounter(OneLineAvatarIconListItem):
+    '''List for shopping list'''
+
+class ListItemWithCheckbox(OneLineAvatarIconListItem):
+    '''Items list.'''
+    icon = StringProperty("food")
+
+class LeftCheckbox(ILeftBodyTouch, MDCheckbox):
+    '''Custom right container.'''
 
 class WindowManager(ScreenManager):
     pass
@@ -30,10 +44,10 @@ class HomeWindow(Screen):
     homeBtn = OptionProperty('normal')
     homeBtn = 'down'
     def listBtn(self, textinput):
-        self.listGrid.add_widget(Label(text=self.list.text, color=(0,0.4,0,1),bold=True,text_size = [360, 30] , halign="left",valign="middle"))
+        self.listGrid.add_widget(ListItemWithCounter(text=self.list.text))
 
     def listBtnRelease(self):
-        self.list.text = "New list..."
+        self.list.text = ""
 
 class RecipesWindow(Screen):
     pass
@@ -61,13 +75,12 @@ class ListWindow(Screen):
 
     def addBtn(self, textinput):
         # self.listContainer.add_widget(ToggleButton(text=self.item.text))
-        self.listContainer.add_widget(CheckBox(size_hint_x=None, width=30 ))
-        self.listContainer.add_widget(ToggleButton(text=self.item.text, text_size = [360, 30] , halign="left",valign="middle"))
+        self.listContainer.add_widget(ListItemWithCheckbox(text=self.item.text))
         # print(self.listContainer.children)
         self.addBtnRelease()
         # print(self.size)
     def addBtnRelease(self):
-        self.item.text = "Add an item..."
+        self.item.text = ""
 
     def catalogueBtn(self):
         pass
@@ -83,8 +96,9 @@ class ListWindow(Screen):
 
 kv = Builder.load_file("groceries.kv")
 
-class todoApp(App):
+class todoApp(MDApp):
     def build(self):
+        self.theme_cls.primary_palette = "Green"
         Window.size = (400, 800)
         return MainWindow()
 
