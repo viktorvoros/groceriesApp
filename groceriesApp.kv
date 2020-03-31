@@ -1,3 +1,5 @@
+#:import Factory kivy.factory.Factory
+
 <ListItemWithCounter>:
     canvas.before:
         Color:
@@ -7,11 +9,24 @@
             size: self.size
             radius: [3]
             # border: [10,10,10,10]
-    # MDCheckbox:
+    text: root.list_title
+    color: 0, 0,0,0
+    on_release:
+        app.edit_list(root.list_index)
 
-    # on_press:
-        # root.parent.parent.parent.parent.parent.rmv()
-<ListItemWithCheckbox>:
+    CounterLabel:
+        text: self.list_number
+        theme_text_color: "Custom"
+        text_color: 0.4,0.4,0.4,1
+
+    IconButtonRight:
+        icon: 'delete'
+        theme_text_color: "Custom"
+        text_color: 0.4,0.4,0.4,1
+        on_release:
+            app.del_list(root.list_index)
+
+<ListItem>:
     canvas.before:
         Color:
             rgba: 1,1,1,1
@@ -19,18 +34,36 @@
             pos: self.pos
             size: self.size
             radius: [3]
+    text: root.list_title
+    color: 0, 0,0,0
+    IconButtonLeft:
+        icon: 'delete'
+        # on_release:
+        #     root.del_item(root.list_index)
+
+    IconButtonRight:
+        icon: 'minus'
+        on_release:
+
+    ItemCounterLabel:
+        text: self.item_number
+        theme_text_color: "Custom"
+        text_color: 0.4,0.4,0.4,1
+
+    IconButtonRight:
+        icon: 'plus'
+        on_release:
+
     IconRightWidget:
         icon: 'food'
 
-    LeftCheckbox:
-        # on_active: app.root.rmvItem()
-
 <ScreenManagementHome>:
     id: sm
-    HomeWindow:
-    ListWindow:
+    # HomeWindow:
+    # ListWindow:
 
 <MainWindow>:
+
     BoxLayout:
         orientation:'vertical'
         # MDToolbar:
@@ -44,10 +77,10 @@
             panel_color: 1, 1, 1, 1
 
             MDBottomNavigationItem:
-                name: 'HomeWindow'
+                name: 'lists'
                 text: 'Home'
                 icon: 'home'
-                ScreenManagementHome:
+                on_tab_press: sm.current = 'lists'
 
             MDBottomNavigationItem:
                 name: 'ChartWindow'
@@ -74,8 +107,7 @@
                 SettingsWindow:
 
 <HomeWindow>:
-    name: 'HomeWindow'
-    listGrid:listGrid
+    # listGrid:listGrid
     list:list
     GridLayout:
         cols:1
@@ -89,171 +121,157 @@
             size_hint_y: None
             height: 10
         GridLayout:
-            cols: 3
-            # canvas:
-            #     Color:
-            #         rgba: 0,0.4,0,1
-            #     Rectangle:
-            #         pos: self.pos
-            #         size: self.size
-            MDLabel:
-                text:''
-                size_hint_x: None
-                width: 10
-                size_hint_y: None
-                height: 60
+            cols: 1
+            padding: 10,0,10,0
             GridLayout:
-                cols:1
+                cols: 2
                 size_hint_y: None
                 height: 60
                 row_default_height: 60
                 row_force_default: True
-                GridLayout:
-                    cols: 3
-                    canvas:
-                        Color:
-                            rgba: 0,0.4,0,1
-                        RoundedRectangle:
-                            pos: self.pos
-                            size: self.size
-                            radius: [3]
-                    Label:
-                        text:""
-                        size_hint_x: None
-                        width: 10
-                    MDIconButton:
-                        icon: "plus"
-                        pos_hint: {"center_x": .5, "center_y": .5}
-                        theme_text_color: "Custom"
-                        text_color: 1,1,1,1
-                        on_release:
-                            root.listBtn(list.text)
-                    MDTextField:
-                        id: listText
-                        hint_text: "New list..."
-                        color_mode: "custom"
-                        current_hint_text_color: 1,1,1,1
-                        line_color_normal: 0.8,0.8,0.8,1
-                        line_color_focus: 1,1,1,1
-                        id: list
-                        on_text_validate:
-                            root.listBtn(list.text)
-            MDLabel:
-                text: ''
-                size_hint_x: None
-                width: 10
-                size_hint_y: None
-                height: 60
-            MDLabel:
-                text: ''
-                size_hint_x: None
-                width: 10
-            ScrollView:
-                do_scroll_x: False
-                do_scroll_y: True
-                MDList:
-                    id: listGrid
+                padding: 0,0,30,0
+                canvas:
+                    Color:
+                        rgba: 0,0.4,0,1
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [3]
+                MDIconButton:
+                    icon: "plus"
+                    pos_hint: {"center_x": .5, "center_y": .5}
+                    valign: 'center'
+                    theme_text_color: "Custom"
+                    text_color: 1,1,1,1
+                    on_release:
+                        app.add_list(list.text)
+                        root.clearTxt(list.text)
+
+                MDTextField:
+                    id: listText
+                    hint_text: "New list..."
+                    color_mode: "custom"
+                    current_hint_text_color: 1,1,1,1
+                    line_color_normal: 0.8,0.8,0.8,1
+                    line_color_focus: 1,1,1,1
+                    id: list
+                    on_text_validate:
+                        app.add_list(self.text)
+                        root.clearTxt(self.text)
 
             MDLabel:
                 text: ''
-                size_hint_x: None
-                width: 10
+                size_hint_y: None
+                height: 10
+
+            RecycleView:
+                data: root.data_for_widgets
+                viewclass: 'ListItemWithCounter'
+                do_scroll_x: False
+                do_scroll_y: True
+
+                RecycleBoxLayout:
+                    default_size: None, dp(56)
+                    default_size_hint: 1, None
+                    size_hint_y: None
+                    height: self.minimum_height
+                    orientation: 'vertical'
+                    spacing: dp(2)
+
 <ListWindow>:
-    name: 'ListWindow'
-    itemGrid:itemGrid
-    itemText:itemText
-    tb:tb
-    # ScreenManager:
-    #     id:sm
-    # listText:listText
+    on_list_content: app.set_list_content(self.list_index, self.list_content)
+    on_list_title: app.set_list_title(self.list_index, self.list_title)
+
+    item:item
+
     GridLayout:
         cols:1
-        MDToolbar:
-            id: tb
-            title: 'Items'
-            # halign: 'center'
-            md_bg_color: 0, .4, 0, 1
-            specific_text_color: 1, 1, 1, 1
+        GridLayout:
+            cols: 2
+            padding: 10,0,10,0
+            size_hint_y: None
+            height: 60
+            canvas.before:
+                Color:
+                    rgba: 0, 0.4, 0, 1
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
             MDIconButton:
                 icon: "keyboard-backspace"
-                # size_hint_x: 0.1
+                valign: 'middle'
+                # size_hint_x: 0.2s
                 # pos_hint: {"center_x": .5, "center_y": .5}
                 theme_text_color: "Custom"
                 text_color: 1,1,1,1
+                md_bg_color: 0, 0.4, 0, 1
                 on_release:
-                    root.goBack()
-                # MDLabel:
-                #     # size_hint_x: 0.9
-                #     text: 'Hi'
-                #     color: 1, 1, 1, 1
+                    app.go_lists()
+            MDLabel:
+                # size_hint_x: 0.8
+                id: tb
+                text: root.list_title
+                color: 1,1,1,1
+                font_size: "20sp"
+                bold: True
+
         MDLabel:
             text:''
             size_hint_y: None
             height: 10
         GridLayout:
-            cols: 3
-            MDLabel:
-                text:''
-                size_hint_x: None
-                width: 10
-                size_hint_y: None
-                height: 60
+            cols:1
+            padding: 10, 0, 10, 0
             GridLayout:
-                cols:1
+                cols: 2
+                padding: 0,0,30,0
                 size_hint_y: None
                 height: 60
-                row_default_height: 50
+                row_default_height: 60
                 row_force_default: True
-                GridLayout:
-                    cols: 3
-                    canvas.before:
-                        Color:
-                            rgba: 0,0.4,0,1
-                        RoundedRectangle:
-                            pos: self.pos
-                            size: self.size
-                            radius: [3]
-                    Label:
-                        text:""
-                        size_hint_x: None
-                        width: 10
-                    MDIconButton:
-                        icon: "plus"
-                        pos_hint: {"center_x": .5, "center_y": .5}
-                        theme_text_color: "Custom"
-                        text_color: 1,1,1,1
-                        on_release:
-                            root.addItem(itemText.text)
-                    MDTextField:
-                        id: itemText
-                        hint_text: "New item..."
-                        color_mode: "custom"
-                        current_hint_text_color: 1,1,1,1
-                        line_color_normal: 0.8,0.8,0.8,1
-                        line_color_focus: 1,1,1,1
-                        # id: item
-                        on_text_validate:
-                            root.addItem(itemText.text)
+                canvas.before:
+                    Color:
+                        rgba: 0,0.4,0,1
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [3]
+
+                MDIconButton:
+                    icon: "plus"
+                    pos_hint: {"center_x": .5, "center_y": .5}
+                    theme_text_color: "Custom"
+                    text_color: 1,1,1,1
+                    on_release:
+                        root.add_item(item.text)
+                        root.clearTxt(item.text)
+                MDTextField:
+                    id: item
+                    hint_text: "New item..."
+                    color_mode: "custom"
+                    current_hint_text_color: 1,1,1,1
+                    line_color_normal: 0.8,0.8,0.8,1
+                    line_color_focus: 1,1,1,1
+                    # id: item
+                    on_text_validate:
+                        root.add_item(item.text)
+                        root.clearTxt(item.text)
             MDLabel:
                 text: ''
-                size_hint_x: None
-                width: 10
                 size_hint_y: None
-                height: 60
-            MDLabel:
-                text: ''
-                size_hint_x: None
-                width: 10
-            ScrollView:
+                height: 10
+            RecycleView:
+                data: root.data_for_items
+                viewclass: 'ListItem'
                 do_scroll_x: False
                 do_scroll_y: True
-                MDList:
-                    id: itemGrid
-
-            MDLabel:
-                text: ''
-                size_hint_x: None
-                width: 10
+                RecycleBoxLayout:
+                    default_size: None, dp(56)
+                    default_size_hint: 1, None
+                    size_hint_y: None
+                    height: self.minimum_height
+                    orientation: 'vertical'
+                    spacing: dp(2)
 <ChartWindow>:
     name: 'ChartWindow'
     GridLayout:
