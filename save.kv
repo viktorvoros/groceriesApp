@@ -51,7 +51,7 @@
                 name: 'HomeWindow'
                 text: 'Home'
                 icon: 'home'
-                ScreenManagementHome:
+                HomeWindow:
 
             MDBottomNavigationItem:
                 name: 'ChartWindow'
@@ -72,7 +72,7 @@
                 CalendarWindow:
 
             MDBottomNavigationItem:
-                name: 'RecipesWindow'
+                name: 'SettingsWindow'
                 text: 'Settings'
                 icon: 'settings'
                 SettingsWindow:
@@ -271,6 +271,19 @@
                 width: 10
 <ChartWindow>:
     name: 'ChartWindow'
+    GridLayout:
+        cols: 1
+        MDToolbar:
+            title: 'My graphs'
+            halign: 'center'
+            md_bg_color: 0, .4, 0, 1
+            specific_text_color: 1, 1, 1, 1
+        MDLabel:
+            text:"make graphs here about payment and nutrition"
+            halign:'center'
+
+<SettingsWindow>:
+    name: 'SettingsWindow'
     GridLayout:
         cols: 1
         MDToolbar:

@@ -62,15 +62,13 @@ class ListWindow(Screen):
     def rmvItem(self, *args, **kwargs):
         self.ids.itemGrid.remove_widget(self.item)
 
+class ChartWindow(Screen):
+    pass
+
 class HomeWindow(Screen):
-    # def __init__(self,**kwargs):
-    #     super(ScreenManagementHome, self).__init__(**kwargs)
-    root = ScreenManagementHome()
+
     data = ListProperty()
-    # root.add_widget(HomeWindow(name='lists'))
-        # screenmanager = ObjectProperty()
-        # listGrid = ObjectProperty(None)
-        # print(self.ids)
+
     def _get_data_for_widgets(self):
         return [{
             'list_index': index,
@@ -90,13 +88,13 @@ class HomeWindow(Screen):
         list = self.data[list_index]
         name = 'list{}'.format(list_index)
 
-        if self.root.has_screen(name):
-            self.root.remove_widget(self.root.get_screen(name))
+        if self.parent.parent.has_screen(name):
+            self.parent.parent.remove_widget(self.parent.parent.get_screen(name))
 
         view = ListWindow(name=name, list_index=list_index, list_title=list.get('title'), list_content=list.get('content'))
-        self.root.add_widget(view)
+        self.parent.parent.add_widget(view)
         # self.transition.direction = 'left'
-        self.root.current = view.name
+        self.parent.parent.current = view.name
 
     def set_list_content(self, list_index, list_content):
         self.data[list_index]['content'] = list_content
@@ -167,8 +165,7 @@ class LeftCheckbox(ILeftBodyTouch, MDCheckbox):
 
 
 class MainWindow(Screen):
-    def __init__(self,**kwargs):
-        super(MainWindow, self).__init__(**kwargs)
+
     #     self.load_lists()
     #
     # def load_lists(self):
@@ -183,8 +180,7 @@ class MainWindow(Screen):
 class RecipesWindow(Screen):
     pass
 
-class ChartWindow(Screen):
-    pass
+
 
 class CalendarWindow(Screen):
     pass
