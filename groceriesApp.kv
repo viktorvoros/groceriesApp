@@ -12,12 +12,14 @@
     text: root.list_title
     color: 0, 0,0,0
     on_release:
-        app.edit_list(root.list_index)
+        app.edit_list(root.list_index, root.list_number)
+        print(root)
 
     CounterLabel:
-        text: self.list_number
+        text: root.list_number
         theme_text_color: "Custom"
-        text_color: 0.4,0.4,0.4,1
+        color: 0.4,0.4,0.4,1
+
 
     IconButtonRight:
         icon: 'delete'
@@ -25,6 +27,8 @@
         text_color: 0.4,0.4,0.4,1
         on_release:
             app.del_list(root.list_index)
+
+
 
 <ListItem>:
     canvas.before:
@@ -37,11 +41,14 @@
     text: root.list_title
     color: 0, 0,0,0
     on_release:
+        # print(root.list_index)
         root.parent.parent.parent.parent.parent.edit_list(root.list_index)
+
     IconButtonLeft:
         icon: 'delete'
         on_release:
             root.parent.parent.parent.parent.parent.del_item(root.list_index)
+            # app.refresh_data(root.list_index, root.parent.parent.parent.parent.parent.list_number)
 
     IconButtonRight:
         icon: 'minus'
@@ -118,7 +125,7 @@
             halign: 'center'
             md_bg_color: 0, .4, 0, 1
             specific_text_color: 1, 1, 1, 1
-        MDLabel:
+        Label:
             text:''
             size_hint_y: None
             height: 10
@@ -146,7 +153,7 @@
                     theme_text_color: "Custom"
                     text_color: 1,1,1,1
                     on_release:
-                        app.add_list(list.text)
+                        app.add_list(list.text, str(0))
                         root.clearTxt(list.text)
                         app.save_lists()
 
@@ -159,7 +166,7 @@
                     line_color_focus: 1,1,1,1
                     id: list
                     on_text_validate:
-                        app.add_list(self.text)
+                        app.add_list(self.text, '0')
                         root.clearTxt(self.text)
                         app.save_lists()
 
@@ -188,6 +195,7 @@
 
     item:item
     listGrid:listGrid
+    tb:tb
 
     GridLayout:
         id:listGrid
@@ -213,6 +221,10 @@
                 md_bg_color: 0, 0.4, 0, 1
                 on_release:
                     app.go_lists()
+                    app.refresh_data(root.list_index, root.list_number)
+                    # root.empty_list()
+                    # root.refresh_data(root.list_index, root.list_number)
+                    root.save_items()
             MDLabel:
                 # size_hint_x: 0.8
                 id: tb
@@ -222,7 +234,8 @@
                 bold: True
 
         MDLabel:
-            text:''
+            # text: root.list_number
+            color: 1,0,1,1
             size_hint_y: None
             height: 10
         GridLayout:

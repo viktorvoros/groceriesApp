@@ -19,8 +19,7 @@ from kivymd.uix.button import MDIconButton
 from kivy.uix.checkbox import CheckBox
 
 class ScreenManagementHome(ScreenManager):
-    # contains HomeWindow and ListWindow
-    pass
+    list_number = StringProperty()
 
 class ChartWindow(Screen):
     list_index = NumericProperty()
@@ -30,15 +29,24 @@ class ChartWindow(Screen):
 
 class ListItemWithCounter(OneLineAvatarIconListItem):
     '''List of shopping list'''
+    list_number = StringProperty()
     list_content = StringProperty()
     list_title = StringProperty()
     list_index = NumericProperty()
-    # list_number = StringProperty()
-    # list_number = 'hello'
+    # print(list_number)
+
+class ListItem(OneLineAvatarIconListItem):
+    '''Custom list item.'''
+    list_title = StringProperty()
+    list_content = StringProperty()
+    list_index = NumericProperty()
+
+    icon = StringProperty("android")
 
 class CounterLabel(IRightBodyTouch, MDLabel):
-    list_number = StringProperty()
-    list_number = '0'
+    pass
+    # list_number = NumericProperty()
+    # list_number =
 
 class ItemCounterLabel(IRightBodyTouch, MDLabel):
     item_number = NumericProperty()
@@ -65,12 +73,14 @@ class MainWindow(Screen):
 class HomeWindow(Screen):
 
     data = ListProperty()
+    # list_number = StringProperty()
 
     def _get_data_for_widgets(self):
         return [{
             'list_index': index,
             'list_content': item['content'],
-            'list_title': item['title']}
+            'list_title': item['title'],
+            'list_number': item['number']}
             for index, item in enumerate(self.data)]
 
     data_for_widgets = AliasProperty(_get_data_for_widgets, bind=['data'])
@@ -82,33 +92,43 @@ class ListWindow(Screen, MDApp):
     list_index = NumericProperty()
     list_title = StringProperty()
     list_content = StringProperty()
+    list_number = StringProperty()
     data = ListProperty()
-    # ga = groceriesApp()
 
 
     def _get_data_for_items(self):
         return [{
             'list_index': index,
             'list_content': item['content'],
-            'list_title': item['title']}
+            'list_title': item['title'],
+            'list_number': item['number']}
             for index, item in enumerate(self.data)]
 
     data_for_items = AliasProperty(_get_data_for_items, bind=['data'])
     def __init__(self,**kwargs):
         super(ListWindow, self).__init__(**kwargs)
+        self.root = ScreenManagementHome()
         self.load_items()
+        self.list_number = str(len(self.data))
+
 
     def add_item(self, textinput):
         # self.load_items()
-        self.data.append({'title': textinput, 'content': ''})
+        self.data.append({'title': textinput, 'content': '', 'number': ''})
         list_index = len(self.data) - 1
+        self.list_number = str(len(self.data))
+        # numberOfItems = str(int(self.list_number) + 1)
+        # self.data['number'] = numberOfItems
+        # self.refresh_items()
         # self.list.text = ''
         # self.edit_list(list_index)
-        print(len(self.data))
+        # print(len(self.data))
+        self.save_items()
 
     def edit_list(self, list_index):
         list = self.data[list_index]
         name = 'ch{}'.format(list_index)
+        self.list_number = str(len(self.data))
 
         if self.parent.has_screen(name):
             self.parent.remove_widget(self.sm.get_screen(name))
@@ -124,12 +144,23 @@ class ListWindow(Screen, MDApp):
         with open(self.items_fn) as fd:
             data = json.load(fd)
         self.data = data
+        self.list_number = str(len(self.data))
 
     def clearTxt(self, TextInput):
         self.item.text = ''
 
     def del_item(self, list_index):
         del self.data[list_index]
+        self.save_items()
+        self.refresh_items()
+
+    def empty_list(self, list_index):
+        # self.data[list_index] = []
+        # self.refresh_items()
+        # self.save_items()
+        print(self.data)
+        del self.data[list_index]
+        print(self.data)
         self.save_items()
         self.refresh_items()
 
@@ -141,6 +172,13 @@ class ListWindow(Screen, MDApp):
         data = self.data
         self.data = []
         self.data = data
+        self.list_number = str(len(self.data))
+
+    def refresh_data(self, list_index, list_number):
+        data = self.data[list_index]
+        data['number'] = list_number
+        self.data[list_index] = []
+        self.data[list_index] = data
     @property
     def items_fn(self):
         return join(self.user_data_dir, 'items.json')
@@ -158,11 +196,6 @@ class ListWindow(Screen, MDApp):
 
     def rmvItem(self, *args, **kwargs):
         self.ids.itemGrid.remove_widget(self.item)
-
-class ListItem(OneLineAvatarIconListItem):
-    '''Custom list item.'''
-    list_title = StringProperty()
-    icon = StringProperty("android")
 
 class RecipesWindow(Screen):
     pass
@@ -183,18 +216,20 @@ class groceriesApp(MDApp):
         self.load_lists()
         Window.size = (400, 800)
         self.transition = SlideTransition()
-        root = ScreenManager(transition=self.transition)
+        root = ScreenManagementHome(transition=self.transition)
         root.add_widget(self.lists)
         return root
 
-    def add_list(self, textinput):
-        self.lists.data.append({'title': textinput, 'content': ''})
+    def add_list(self, textinput, number):
+        self.lists.data.append({'title': textinput, 'content': '', 'number': number})
         list_index = len(self.lists.data) - 1
+        self.refresh_lists()
         # self.list.text = ''
         # self.edit_list(list_index)
 
-    def edit_list(self, list_index):
+    def edit_list(self, list_index, list_number):
         list = self.lists.data[list_index]
+        print(list)
         name = 'list{}'.format(list_index)
 
         if self.root.has_screen(name):
@@ -203,7 +238,11 @@ class groceriesApp(MDApp):
         view = ListWindow(name=name, list_index=list_index, list_title=list.get('title'), list_content=list.get('content'))
         self.root.add_widget(view)
         self.transition.direction = 'left'
+        numberOfItems = str(int(view.list_number) + 1)
+        self.lists.list_number = numberOfItems
+        self.lists.data[list_index]['number'] = str(view.list_number)
         self.root.current = view.name
+        self.refresh_lists()
 
     def set_list_content(self, list_index, list_content):
         self.lists.data[list_index]['content'] = list_content
@@ -234,17 +273,27 @@ class groceriesApp(MDApp):
         self.lists.data = []
         self.lists.data = data
 
+    def refresh_data(self, list_index, list_number):
+        data = self.lists.data[list_index]
+        data['number'] = list_number
+        self.lists.data[list_index] = []
+        self.lists.data[list_index] = data
+        self.save_lists()
+
     def go_lists(self):
         self.transition.direction = 'right'
         self.root.current = 'lists'
 
     def del_list(self, list_index):
+        list = self.lists.data[list_index]
+        name = 'list{}'.format(list_index)
+        view = ListWindow(name=name, list_index=list_index, list_title=list.get('title'), list_content=list.get('content'))
+        # print(view.data)
+        view.empty_list(list_index)
         del self.lists.data[list_index]
         self.save_lists()
         self.refresh_lists()
         self.go_lists()
-
-
 
     @property
     def lists_fn(self):
