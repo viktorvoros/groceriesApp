@@ -19,7 +19,8 @@ from kivymd.uix.button import MDIconButton
 from kivy.uix.checkbox import CheckBox
 
 class ScreenManagementHome(ScreenManager):
-    list_number = StringProperty()
+    # list_number = StringProperty()
+    pass
 
 class ChartWindow(Screen):
     list_index = NumericProperty()
@@ -217,8 +218,9 @@ class groceriesApp(MDApp):
         Window.size = (400, 800)
         self.transition = SlideTransition()
         root = ScreenManagementHome(transition=self.transition)
-        root.add_widget(self.lists)
-        return root
+        root.add_widget(self.lists) 
+
+        return MainWindow()
 
     def add_list(self, textinput, number):
         self.lists.data.append({'title': textinput, 'content': '', 'number': number})
@@ -289,7 +291,7 @@ class groceriesApp(MDApp):
         name = 'list{}'.format(list_index)
         view = ListWindow(name=name, list_index=list_index, list_title=list.get('title'), list_content=list.get('content'))
         # print(view.data)
-        view.empty_list(list_index)
+        # view.empty_list(list_index)
         del self.lists.data[list_index]
         self.save_lists()
         self.refresh_lists()

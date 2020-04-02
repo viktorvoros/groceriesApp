@@ -14,6 +14,9 @@ from kivy.properties import ObjectProperty, ListProperty, AliasProperty
 from kivy.uix.button import Button
 
 class ScreenManagementHome(ScreenManager):
+    def go_lists(self):
+        # self.transition.direction = 'right'
+        self.current = 'lists'
     # contains HomeWindow and ListWindow
     # def __init__(self,**kwargs):
     #     super(ScreenManagementHome, HomeWindow, self).__init__(**kwargs)
@@ -77,6 +80,9 @@ class HomeWindow(Screen):
             for index, item in enumerate(self.data)]
 
     data_for_widgets = AliasProperty(_get_data_for_widgets, bind=['data'])
+    def __init__(self,**kwargs):
+        super(HomeWindow, self).__init__(**kwargs)
+        # self.sm = ScreenManagementHome()
 
     def add_list(self, textinput):
         self.data.append({'title': textinput, 'content': ''})
@@ -88,13 +94,13 @@ class HomeWindow(Screen):
         list = self.data[list_index]
         name = 'list{}'.format(list_index)
 
-        if self.parent.parent.has_screen(name):
-            self.parent.parent.remove_widget(self.parent.parent.get_screen(name))
+        if self.parent.has_screen(name):
+            self.parent.remove_widget(self.parent.get_screen(name))
 
         view = ListWindow(name=name, list_index=list_index, list_title=list.get('title'), list_content=list.get('content'))
-        self.parent.parent.add_widget(view)
+        self.parent.add_widget(view)
         # self.transition.direction = 'left'
-        self.parent.parent.current = view.name
+        self.parent.current = view.name
 
     def set_list_content(self, list_index, list_content):
         self.data[list_index]['content'] = list_content
@@ -127,7 +133,7 @@ class HomeWindow(Screen):
 
     def go_lists(self):
         # self.transition.direction = 'right'
-        self.root.current = 'lists'
+        self.parent.current = 'lists'
 
     @property
     def lists_fn(self):
@@ -194,7 +200,7 @@ class saveApp(MDApp):
     def build(self):
         self.theme_cls.primary_palette = "Green"
 
-        Window.size = (400, 800)
+        # Window.size = (400, 800)
         # mw = MainWindow()
         # return my_screenmanager
         return MainWindow()

@@ -51,7 +51,9 @@
                 name: 'HomeWindow'
                 text: 'Home'
                 icon: 'home'
-                HomeWindow:
+                on_touch_down:
+                    sm.current = 'HomeWindow'
+                ScreenManagementHome:
 
             MDBottomNavigationItem:
                 name: 'ChartWindow'
@@ -196,7 +198,7 @@
                 theme_text_color: "Custom"
                 text_color: 1,1,1,1
                 on_release:
-                    self.parent.go_lists()
+                    self.parent.parent.parent.parent.go_lists()
                 # MDLabel:
                 #     # size_hint_x: 0.9
                 #     text: 'Hi'

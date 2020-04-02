@@ -12,7 +12,7 @@
     text: root.list_title
     color: 0, 0,0,0
     on_release:
-        app.edit_list(root.list_index, root.list_number)
+        root.parent.parent.parent.parent.parent.edit_list(root.list_index, root.list_number, root.list_screen)
         print(root)
 
     CounterLabel:
@@ -26,7 +26,7 @@
         theme_text_color: "Custom"
         text_color: 0.4,0.4,0.4,1
         on_release:
-            app.del_list(root.list_index)
+            root.parent.parent.parent.parent.parent.del_list(root.list_index, root.list_screen)
 
 
 
@@ -68,7 +68,8 @@
 
 <ScreenManagementHome>:
     id: sm
-    # HomeWindow:
+    transition: self.transition
+    HomeWindow:
     # ListWindow:
 
 <MainWindow>:
@@ -116,6 +117,7 @@
                 SettingsWindow:
 
 <HomeWindow>:
+    name: 'lists'
     # listGrid:listGrid
     list:list
     GridLayout:
@@ -153,9 +155,9 @@
                     theme_text_color: "Custom"
                     text_color: 1,1,1,1
                     on_release:
-                        app.add_list(list.text, str(0))
+                        root.add_list(list.text, str(0), str(0))
                         root.clearTxt(list.text)
-                        app.save_lists()
+                        root.save_lists()
 
                 MDTextField:
                     id: listText
@@ -166,9 +168,9 @@
                     line_color_focus: 1,1,1,1
                     id: list
                     on_text_validate:
-                        app.add_list(self.text, '0')
+                        root.add_list(self.text, '0', '0')
                         root.clearTxt(self.text)
-                        app.save_lists()
+                        root.save_lists()
 
             MDLabel:
                 text: ''
@@ -220,7 +222,7 @@
                 text_color: 1,1,1,1
                 md_bg_color: 0, 0.4, 0, 1
                 on_release:
-                    app.go_lists()
+                    self.parent.parent.parent.parent.go_lists()
                     app.refresh_data(root.list_index, root.list_number)
                     # root.empty_list()
                     # root.refresh_data(root.list_index, root.list_number)
