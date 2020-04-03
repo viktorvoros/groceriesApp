@@ -13,7 +13,7 @@
     color: 0, 0,0,0
     on_release:
         root.parent.parent.parent.parent.parent.edit_list(root.list_index, root.list_number, root.list_screen)
-        print(root)
+        # print(root)
 
     CounterLabel:
         text: root.list_number
@@ -28,7 +28,41 @@
         on_release:
             root.parent.parent.parent.parent.parent.del_list(root.list_index, root.list_screen)
 
+<SwipeButton>:
+    listItem:listItem
+    text: ''
+    color: 0, 0,0,1
+    ignore_perpendicular_swipes: True
+    min_move: 20/self.width
+    index:1
+    canvas.before:
+        Color:
+            rgba: 1,1,1,1
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [3]
+    Button:
+        text: 'Done'
+        color: 1,1,1,1
+        background_color:(0,1,0,1) if self.state == 'normal' else (0,1,0,1)
+        on_press:
+            root.parent.parent.parent.parent.parent.del_item(root.list_index)
+    ListItem:
+        id: listItem
+        text: root.list_title
+        color: 0,0,0,1
+        on_press:
+            print(root.list_index)
+            # print(root.parent.parent.parent.parent.parent)
+            root.parent.parent.parent.parent.parent.item_info(root.list_index, root.list_title)
 
+    Button:
+        text: 'Delete'
+        color: 1,1,1,1
+        background_color:(1,0,0,1) if self.state == 'normal' else (1,0,0,1)
+        on_press:
+            root.parent.parent.parent.parent.parent.del_item(root.list_index)
 
 <ListItem>:
     canvas.before:
@@ -38,33 +72,101 @@
             pos: self.pos
             size: self.size
             radius: [3]
-    text: root.list_title
+    text: ''
     color: 0, 0,0,0
-    on_release:
-        # print(root.list_index)
-        root.parent.parent.parent.parent.parent.edit_list(root.list_index)
-
-    IconButtonLeft:
-        icon: 'delete'
-        on_release:
-            root.parent.parent.parent.parent.parent.del_item(root.list_index)
-            # app.refresh_data(root.list_index, root.parent.parent.parent.parent.parent.list_number)
-
-    IconButtonRight:
-        icon: 'minus'
-        on_release:
-
+    # IconButtonLeft:
+    #     icon: 'delete'
+    #     on_release:
+    #         root.parent.parent.parent.parent.parent.del_item(root.list_index)
+    #         # app.refresh_data(root.list_index, root.parent.parent.parent.parent.parent.list_number)
     ItemCounterLabel:
         text: self.item_number
         theme_text_color: "Custom"
         text_color: 0.4,0.4,0.4,1
 
-    IconButtonRight:
-        icon: 'plus'
-        on_release:
+    # IconButtonRight:
+    #     icon: 'minus'
+    #     on_release:
+
+    # ItemCounterLabel:
+    #     text: self.item_number
+    #     theme_text_color: "Custom"
+    #     text_color: 0.4,0.4,0.4,1
+
+    # IconButtonRight:
+    #     icon: 'plus'
+    #     on_release:
 
     IconRightWidget:
         icon: 'food'
+        canvas.before:
+            Color:
+                rgba: 1,0,0,1
+            Rectangle:
+                size: self.size
+                pos: self.pos
+        # on_press:
+        #     root.parent.parent.parent.parent.parent.parent.parent.edit_item(root.list_index)
+
+<ItemPopup>:
+    lab:lab
+    new:new
+    id: pop
+    # background_color:0, 0, 0, 0
+    separator_height: 0
+    # title:''
+    BoxLayout:
+        orientation: 'vertical'
+        canvas.before:
+            Color:
+                rgba: 0,0.4,0,1
+            RoundedRectangle:
+                size: self.size
+                pos: self.pos
+                radius: [16,16,16,16]
+        Label:
+            text: root.list_title
+            bold: True
+            size_hint_y: None
+            height: 50
+        BoxLayout:
+            orientation: 'vertical'
+            canvas.before:
+                Color:
+                    rgba: 1,1,1,1
+                RoundedRectangle:
+                    size: self.size
+                    pos: self.pos
+                    radius: [0,0,16,16]
+            Label:
+                text:''
+                size_hint_y: None
+                height: 30
+            Label:
+                id: lab
+                text: 'Rename'
+                # canvas.before:
+                #     Color:
+                #         rgba: 0,1,1,1
+                #     Rectangle:
+                #         size: self.size
+                #         pos: self.pos
+                        # radius: [16]
+            TextInput:
+                id: new
+                hint_text: pop.list_title
+                multiline: False
+                size_hint_y: None
+                height: 30
+                on_text_validate:
+                    lab.text = self.text
+                    pop.dismiss()
+                    root.caller.edit_item(self.text)
+
+            Label:
+                text:''
+                size_hint_y: None
+                height: 30
 
 <ScreenManagementHome>:
     id: sm
@@ -155,7 +257,7 @@
                     theme_text_color: "Custom"
                     text_color: 1,1,1,1
                     on_release:
-                        root.add_list(list.text, str(0), str(0))
+                        root.add_list(list.text, '0', '0')
                         root.clearTxt(list.text)
                         root.save_lists()
 
@@ -198,6 +300,7 @@
     item:item
     listGrid:listGrid
     tb:tb
+    lineChart:lineChart
 
     GridLayout:
         id:listGrid
@@ -283,9 +386,47 @@
                 text: ''
                 size_hint_y: None
                 height: 10
+
+            BoxLayout:
+                id: lineChart
+                orientation: 'horizontal'
+                size_hint_y: None
+                height: 10
+                Label:
+                    size_hint_x: 0.25
+                    canvas.before:
+                        Color:
+                            rgba: 1,0,0,1
+                        Rectangle:
+                            size: self.size
+                            pos: self.pos
+                Label:
+                    size_hint_x: 0.25
+                    canvas.before:
+                        Color:
+                            rgba: 0,1,0,1
+                        Rectangle:
+                            size: self.size
+                            pos: self.pos
+                Label:
+                    size_hint_x: 0.25
+                    canvas.before:
+                        Color:
+                            rgba: 0,0,1,1
+                        Rectangle:
+                            size: self.size
+                            pos: self.pos
+                Label:
+                    size_hint_x: 0.25
+                    canvas.before:
+                        Color:
+                            rgba: 1,1,0,1
+                        Rectangle:
+                            size: self.size
+                            pos: self.pos
             RecycleView:
                 data: root.data_for_items
-                viewclass: 'ListItem'
+                viewclass: 'SwipeButton'
                 do_scroll_x: False
                 do_scroll_y: True
                 RecycleBoxLayout:
@@ -295,6 +436,7 @@
                     height: self.minimum_height
                     orientation: 'vertical'
                     spacing: dp(2)
+
 <ChartWindow>:
     # name: 'ChartWindow'
     GridLayout:
@@ -307,3 +449,11 @@
         MDLabel:
             text:"make graphs here about payment and nutrition"
             halign:'center'
+
+<CalendarWindow>:
+    name:'CalendarWindow'
+    box:box
+    GridLayout:
+        name:'box'
+        id:box
+        cols:1
