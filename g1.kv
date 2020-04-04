@@ -74,6 +74,8 @@
             radius: [3]
     text: ''
     color: 0, 0,0,0
+    secondary_text: 'Notes'
+    secondary_font_style: 'Subtitle2'
     # IconButtonLeft:
     #     icon: 'delete'
     #     on_release:
@@ -109,8 +111,9 @@
         #     root.parent.parent.parent.parent.parent.parent.parent.edit_item(root.list_index)
 
 <ItemPopup>:
-    lab:lab
-    new:new
+    item_name:item_name
+    category:category
+    price:price
     id: pop
     # background_color:0, 0, 0, 0
     separator_height: 0
@@ -124,13 +127,61 @@
                 size: self.size
                 pos: self.pos
                 radius: [16,16,16,16]
-        Label:
-            text: root.list_title
-            bold: True
+        BoxLayout:
+            orientation: 'horizontal'
             size_hint_y: None
-            height: 50
+            height: 60
+            padding: [10,0,10,0]
+            MDIconButton:
+                # size_hint_x: 0.1
+                # width: 30
+                icon: 'keyboard-backspace'
+                theme_text_color: "Custom"
+                text_color: 1,1,1,1
+                item_name: item_name.hint_text if item_name.hint_text != "" else item_name.text
+                on_release:
+                    root.caller.edit_item(item_name.text)
+                    pop.dismiss()
+            # Label:
+            #     text: root.list_title
+            #     bold: True
+            #     size_hint_y: None
+            #     height: 50
+            MDTextField:
+                id: item_name
+                size_hint_y: 0.85
+                hint_text: "Item"
+                text: pop.list_title
+                # foreground_color: (1,1,1,1)
+                color_mode: "custom"
+                current_hint_text_color: 1,1,1,1
+                line_color_normal: 0.8,0.8,0.8,1
+                line_color_focus: 1,1,1,1
+                on_text_validate:
+                    root.caller.edit_item(self.text)
+            # TextInput:
+            #     id: item_name
+            #     hint_text: pop.list_title
+            #     multiline: False
+            #     size_hint_y: 0.8
+            #     color: 1,1,1,1
+            #     hint_text_color: (1,1,1,1)
+            #     foreground_color: (1,1,1,1)
+            #     background_normal : ''
+            #     background_color: 0,0,0,0
+            #     font_size: '20sp'
+            #     on_text_validate:
+            #         root.caller.edit_item(self.text)
+            MDIconButton:
+                icon: 'delete'
+                theme_text_color: "Custom"
+                text_color:1,1,1,1
+                on_release:
+                    root.caller.del_item(root.caller.item_number)
+                    pop.dismiss()
         BoxLayout:
             orientation: 'vertical'
+            spacing: 10
             canvas.before:
                 Color:
                     rgba: 1,1,1,1
@@ -141,32 +192,87 @@
             Label:
                 text:''
                 size_hint_y: None
-                height: 30
-            Label:
-                id: lab
-                text: 'Rename'
-                # canvas.before:
-                #     Color:
-                #         rgba: 0,1,1,1
-                #     Rectangle:
-                #         size: self.size
-                #         pos: self.pos
-                        # radius: [16]
-            TextInput:
-                id: new
-                hint_text: pop.list_title
-                multiline: False
-                size_hint_y: None
-                height: 30
-                on_text_validate:
-                    lab.text = self.text
-                    pop.dismiss()
-                    root.caller.edit_item(self.text)
+                height: 10
+            BoxLayout:
+                orientation: 'horizontal'
+                padding: [20,0,20,0]
+                spacing: 10
 
-            Label:
-                text:''
+                BoxLayout:
+                    orientation: 'vertical'
+                    row_default_height: 30
+                    row_force_default: True
+
+                    MDTextField:
+                        id: category
+                        hint_text: "Category"
+                        text: 'Dairy'
+                        color_mode: "custom"
+                        current_hint_text_color: 0,0,0,1
+                        line_color_normal: 0.4,0.4,0.4,0.5
+                        line_color_focus: 0,0.4,0,1
+                        on_text_validate:
+                            lab.text = self.text
+                            # pop.dismiss()
+                            root.caller.edit_item(self.text)
+
+                    MDTextField:
+                        id: note
+                        hint_text: "Quantity"
+                        text: '1'
+                        color_mode: "custom"
+                        current_hint_text_color: 0,0,0,1
+                        line_color_normal: 0.4,0.4,0.4,0.5
+                        line_color_focus: 0,0.4,0,1
+                        on_text_validate:
+                            lab.text = self.text
+                            # pop.dismiss()
+                            root.caller.edit_item(self.text)
+                    MDTextField:
+                        id: price
+                        hint_text: "Price"
+                        text: '0'
+                        color_mode: "custom"
+                        current_hint_text_color: 0,0,0,1
+                        line_color_normal: 0.4,0.4,0.4,0.5
+                        line_color_focus: 0,0.4,0,1
+                        on_text_validate:
+                            lab.text = self.text
+                            # pop.dismiss()
+                            root.caller.edit_item(self.text)
+
+                    MDTextField:
+                        id: note
+                        hint_text: "Note"
+                        text: ''
+                        color_mode: "custom"
+                        current_hint_text_color: 0,0,0,1
+                        line_color_normal: 0.4,0.4,0.4,0.5
+                        line_color_focus: 0,0.4,0,1
+                        on_text_validate:
+                            lab.text = self.text
+                            # pop.dismiss()
+                            root.caller.edit_item(self.text)
+
+                BoxLayout:
+                    orientation: 'vertical'
+                    spacing: 10
+                    Label:
+                        text: 'Image/icon here'
+                        color: 1,1,1,1
+                        canvas.before:
+                            Color:
+                                rgba: 0,0.4,0,1
+                            Rectangle:
+                                size: self.size
+                                pos: self.pos
+                    Button:
+                        text: 'Change photo'
+                        size_hint_y: 0.2
+            Widget:
                 size_hint_y: None
-                height: 30
+                height: 10
+
 
 <ScreenManagementHome>:
     id: sm

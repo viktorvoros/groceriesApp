@@ -6,7 +6,7 @@ from kivy.core.window import Window
 from kivy.uix.screenmanager import ScreenManager, Screen, SlideTransition
 from kivymd.app import MDApp
 from kivymd.uix.list import OneLineListItem
-from kivymd.uix.list import ILeftBodyTouch,IRightBodyTouch, OneLineAvatarIconListItem
+from kivymd.uix.list import ILeftBodyTouch,IRightBodyTouch, OneLineAvatarIconListItem, TwoLineAvatarIconListItem
 from kivymd.uix.selectioncontrol import MDCheckbox
 from kivymd.icon_definitions import md_icons
 from kivy.properties import StringProperty, NumericProperty
@@ -69,7 +69,7 @@ class SwipeButton(Carousel):
         super(SwipeButton, self).__init__(**kwargs)
         print (self.caller)
 
-class ListItem(OneLineAvatarIconListItem):
+class ListItem(TwoLineAvatarIconListItem):
     '''Custom list item.'''
     list_title = StringProperty()
     list_content = StringProperty()
@@ -272,7 +272,7 @@ class ListWindow(Screen, MDApp):
         self.save_items()
 
     def item_info(self, list_index, list_title):
-        popup = ItemPopup(caller = self, title='', list_title=list_title, size_hint=(None, None), size=(400, 400))
+        popup = ItemPopup(caller = self, title='', list_title=list_title, size_hint=(None, None), size=(self.size[0]-20, 350))
         popup.open()
         self.item_number = list_index
     def edit_item(self, list_title):
