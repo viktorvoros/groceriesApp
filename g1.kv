@@ -47,22 +47,20 @@
         color: 1,1,1,1
         background_color:(0,1,0,1) if self.state == 'normal' else (0,1,0,1)
         on_press:
-            root.parent.parent.parent.parent.parent.del_item(root.list_index)
+            root.parent.parent.parent.parent.parent.del_item(root.item_index)
     ListItem:
         id: listItem
-        text: root.list_title
+        text: root.item_name
         color: 0,0,0,1
         on_press:
-            print(root.list_index)
-            # print(root.parent.parent.parent.parent.parent)
-            root.parent.parent.parent.parent.parent.item_info(root.list_index, root.list_title)
+            root.parent.parent.parent.parent.parent.item_info(root.item_index, listItem.text)
 
     Button:
         text: 'Delete'
         color: 1,1,1,1
         background_color:(1,0,0,1) if self.state == 'normal' else (1,0,0,1)
         on_press:
-            root.parent.parent.parent.parent.parent.del_item(root.list_index)
+            root.parent.parent.parent.parent.parent.del_item(root.item_index)
 
 <ListItem>:
     canvas.before:
@@ -72,48 +70,41 @@
             pos: self.pos
             size: self.size
             radius: [3]
-    text: ''
+    text: root.item_name
     color: 0, 0,0,0
     secondary_text: 'Notes'
     secondary_font_style: 'Subtitle2'
-    # IconButtonLeft:
-    #     icon: 'delete'
-    #     on_release:
-    #         root.parent.parent.parent.parent.parent.del_item(root.list_index)
-    #         # app.refresh_data(root.list_index, root.parent.parent.parent.parent.parent.list_number)
+    on_press:
+        root.parent.parent.parent.parent.parent.item_info(root.list_index, self.text)
+    IconButtonLeft:
+        icon: 'cart'
+        on_release:
+            root.parent.parent.parent.parent.parent.del_item(root.list_index)
+            # app.refresh_data(root.list_index, root.parent.parent.parent.parent.parent.list_number)
     ItemCounterLabel:
         text: self.item_number
         theme_text_color: "Custom"
         text_color: 0.4,0.4,0.4,1
 
-    # IconButtonRight:
-    #     icon: 'minus'
-    #     on_release:
-
-    # ItemCounterLabel:
-    #     text: self.item_number
-    #     theme_text_color: "Custom"
-    #     text_color: 0.4,0.4,0.4,1
-
-    # IconButtonRight:
-    #     icon: 'plus'
-    #     on_release:
-
     IconRightWidget:
-        icon: 'food'
+        icon: root.icon
         canvas.before:
             Color:
                 rgba: 1,0,0,1
             Rectangle:
                 size: self.size
                 pos: self.pos
-        # on_press:
+        on_press:
+            print(self.item_category)
         #     root.parent.parent.parent.parent.parent.parent.parent.edit_item(root.list_index)
 
 <ItemPopup>:
     item_name:item_name
-    category:category
-    price:price
+    item_category:item_category
+    item_price:item_price
+    item_quantity:item_quantity
+    item_image:item_image
+    item_note:item_note
     id: pop
     # background_color:0, 0, 0, 0
     separator_height: 0
@@ -140,38 +131,22 @@
                 text_color: 1,1,1,1
                 item_name: item_name.hint_text if item_name.hint_text != "" else item_name.text
                 on_release:
-                    root.caller.edit_item(item_name.text)
+                    root.caller.edit_item(item_name.text, item_category.text, item_quantity.text, item_price.text, item_note.text, item_image.text)
+                    root.caller.refresh_item_database(item_name.text, item_category.text, item_price.text, item_image.text)
                     pop.dismiss()
-            # Label:
-            #     text: root.list_title
-            #     bold: True
-            #     size_hint_y: None
-            #     height: 50
+
             MDTextField:
                 id: item_name
                 size_hint_y: 0.85
                 hint_text: "Item"
-                text: pop.list_title
+                text: pop.item_name
                 # foreground_color: (1,1,1,1)
                 color_mode: "custom"
                 current_hint_text_color: 1,1,1,1
                 line_color_normal: 0.8,0.8,0.8,1
                 line_color_focus: 1,1,1,1
                 on_text_validate:
-                    root.caller.edit_item(self.text)
-            # TextInput:
-            #     id: item_name
-            #     hint_text: pop.list_title
-            #     multiline: False
-            #     size_hint_y: 0.8
-            #     color: 1,1,1,1
-            #     hint_text_color: (1,1,1,1)
-            #     foreground_color: (1,1,1,1)
-            #     background_normal : ''
-            #     background_color: 0,0,0,0
-            #     font_size: '20sp'
-            #     on_text_validate:
-            #         root.caller.edit_item(self.text)
+                    root.caller.edit_item(item_name.text, item_category.text, item_quantity.text, item_price.text, item_note.text, item_image.text)
             MDIconButton:
                 icon: 'delete'
                 theme_text_color: "Custom"
@@ -204,61 +179,57 @@
                     row_force_default: True
 
                     MDTextField:
-                        id: category
+                        id: item_category
                         hint_text: "Category"
-                        text: 'Dairy'
+                        text: root.item_category
                         color_mode: "custom"
                         current_hint_text_color: 0,0,0,1
                         line_color_normal: 0.4,0.4,0.4,0.5
                         line_color_focus: 0,0.4,0,1
                         on_text_validate:
-                            lab.text = self.text
-                            # pop.dismiss()
-                            root.caller.edit_item(self.text)
+                            root.item_category = item_category.text
+                            root.caller.edit_item(item_name.text, item_category.text, item_quantity.text, item_price.text, item_note.text, item_image.text)
 
                     MDTextField:
-                        id: note
+                        id: item_quantity
                         hint_text: "Quantity"
-                        text: '1'
+                        text: root.item_quantity
                         color_mode: "custom"
                         current_hint_text_color: 0,0,0,1
                         line_color_normal: 0.4,0.4,0.4,0.5
                         line_color_focus: 0,0.4,0,1
                         on_text_validate:
-                            lab.text = self.text
-                            # pop.dismiss()
-                            root.caller.edit_item(self.text)
+                            root.item_quantity = item_quantity.text
+                            root.caller.edit_item(item_name.text, item_category.text, item_quantity.text, item_price.text, item_note.text, item_image.text)
                     MDTextField:
-                        id: price
+                        id: item_price
                         hint_text: "Price"
-                        text: '0'
+                        text: root.item_price
                         color_mode: "custom"
                         current_hint_text_color: 0,0,0,1
                         line_color_normal: 0.4,0.4,0.4,0.5
                         line_color_focus: 0,0.4,0,1
                         on_text_validate:
-                            lab.text = self.text
-                            # pop.dismiss()
-                            root.caller.edit_item(self.text)
+                            root.item_price = item_price.text
+                            root.caller.edit_item(item_name.text, item_category.text, item_quantity.text, item_price.text, item_note.text, item_image.text)
 
                     MDTextField:
-                        id: note
+                        id: item_note
                         hint_text: "Note"
-                        text: ''
+                        text: root.item_note
                         color_mode: "custom"
                         current_hint_text_color: 0,0,0,1
                         line_color_normal: 0.4,0.4,0.4,0.5
                         line_color_focus: 0,0.4,0,1
                         on_text_validate:
-                            lab.text = self.text
-                            # pop.dismiss()
-                            root.caller.edit_item(self.text)
+                            root.caller.edit_item(item_name.text, item_category.text, item_quantity.text, item_price.text, item_note.text, item_image.text)
 
                 BoxLayout:
                     orientation: 'vertical'
                     spacing: 10
                     Label:
-                        text: 'Image/icon here'
+                        id: item_image
+                        text: root.item_image
                         color: 1,1,1,1
                         canvas.before:
                             Color:
@@ -269,6 +240,8 @@
                     Button:
                         text: 'Change photo'
                         size_hint_y: 0.2
+                    Image:
+                        source: 'nutri-score.png'
             Widget:
                 size_hint_y: None
                 height: 10
@@ -425,19 +398,14 @@
             MDIconButton:
                 icon: "keyboard-backspace"
                 valign: 'middle'
-                # size_hint_x: 0.2s
-                # pos_hint: {"center_x": .5, "center_y": .5}
                 theme_text_color: "Custom"
                 text_color: 1,1,1,1
                 md_bg_color: 0, 0.4, 0, 1
                 on_release:
                     self.parent.parent.parent.parent.go_lists()
                     app.refresh_data(root.list_index, root.list_number)
-                    # root.empty_list()
-                    # root.refresh_data(root.list_index, root.list_number)
                     root.save_items()
             MDLabel:
-                # size_hint_x: 0.8
                 id: tb
                 text: root.list_title
                 color: 1,1,1,1
@@ -474,6 +442,7 @@
                     text_color: 1,1,1,1
                     on_release:
                         root.add_item(item.text)
+                        root.add_item_to_database(item.text, '', '1', '0', '', '')
                         root.clearTxt(item.text)
                         root.save_items()
                 MDTextField:
@@ -486,8 +455,10 @@
                     # id: item
                     on_text_validate:
                         root.add_item(item.text)
+                        root.add_item_to_database(item.text, '', '1', '0', '', '')
                         root.clearTxt(item.text)
                         root.save_items()
+
             MDLabel:
                 text: ''
                 size_hint_y: None
@@ -532,7 +503,7 @@
                             pos: self.pos
             RecycleView:
                 data: root.data_for_items
-                viewclass: 'SwipeButton'
+                viewclass: 'ListItem'
                 do_scroll_x: False
                 do_scroll_y: True
                 RecycleBoxLayout:
@@ -542,7 +513,21 @@
                     height: self.minimum_height
                     orientation: 'vertical'
                     spacing: dp(2)
-
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint_y: None
+                height: 50
+                canvas.before:
+                    Color:
+                        rgba: 0.5,0.5,0.5,1
+                    Rectangle:
+                        size: self.size
+                        pos: self.pos
+                Label:
+                    text: 'To be spent:'
+                    color: 0,0,0,1
+                Label:
+                    text: root.tobespent()
 <ChartWindow>:
     # name: 'ChartWindow'
     GridLayout:
