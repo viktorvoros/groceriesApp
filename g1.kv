@@ -72,31 +72,32 @@
             radius: [3]
     text: root.item_name
     color: 0, 0,0,0
-    secondary_text: 'Notes'
-    secondary_font_style: 'Subtitle2'
-    on_press:
-        root.parent.parent.parent.parent.parent.item_info(root.list_index, self.text)
+    # secondary_text: root.item_quantity
+    # secondary_font_style: 'Subtitle2'
+    orientation: 'horizontal'
+    # on_press:
+    #     root.parent.parent.parent.parent.parent.item_info(root.list_index, self.text)
     IconButtonLeft:
-        icon: 'cart'
+        icon: 'cart-outline'
         on_release:
             root.parent.parent.parent.parent.parent.del_item(root.list_index)
             # app.refresh_data(root.list_index, root.parent.parent.parent.parent.parent.list_number)
-    ItemCounterLabel:
-        text: self.item_number
-        theme_text_color: "Custom"
-        text_color: 0.4,0.4,0.4,1
 
-    IconRightWidget:
-        icon: root.icon
-        canvas.before:
-            Color:
-                rgba: 1,0,0,1
-            Rectangle:
-                size: self.size
-                pos: self.pos
+    OneLineAvatarIconListItem:
+        text: root.item_name
         on_press:
-            print(self.item_category)
-        #     root.parent.parent.parent.parent.parent.parent.parent.edit_item(root.list_index)
+            root.parent.parent.parent.parent.parent.item_info(root.item_index, self.text)
+        CounterLabel:
+            text: '\u20ac ' + root.item_price
+            size_hint_x: None
+            width: 50
+            theme_text_color: "Custom"
+            text_color: 0.4,0.4,0.4,1
+
+    MDIconButton:
+        icon: root.icon
+        theme_text_color: 'Custom'
+        text_color: 0,0,0.4,1
 
 <ItemPopup>:
     item_name:item_name
@@ -517,17 +518,27 @@
                 orientation: 'horizontal'
                 size_hint_y: None
                 height: 50
+                padding: [20,0,20,0]
                 canvas.before:
                     Color:
-                        rgba: 0.5,0.5,0.5,1
-                    Rectangle:
-                        size: self.size
-                        pos: self.pos
+                        rgba: 0.5,0.5,0.5,0.5
+                    Line:
+                        points: (20, self.size[1], self.size[0], self.size[1])
                 Label:
                     text: 'To be spent:'
-                    color: 0,0,0,1
+                    # bold: True
+                    color: 0,0,0,0.8
+                # MDIconButton:
+                #
+                #     icon: 'currency-eur'
+                #     theme_text_color: 'Custom'
+                #     text_color: 0,0,0,0.8
+                #     # size_hint_x: 0.1
                 Label:
-                    text: root.tobespent()
+                    text: '\u20ac ' + root.tobespent(root.data)
+                    color: 0,0,0,0.8
+                    # size_hint_x: 0.1
+                    # bold: True
 <ChartWindow>:
     # name: 'ChartWindow'
     GridLayout:

@@ -73,7 +73,7 @@ class SwipeButton(Carousel):
         self.caller = kwargs.get('caller')
         super(SwipeButton, self).__init__(**kwargs)
 
-class ListItem(TwoLineAvatarIconListItem):
+class ListItem(BoxLayout):
     '''Custom list item.'''
     item_name = StringProperty()
     item_category = StringProperty()
@@ -304,7 +304,7 @@ class ListWindow(Screen, MDApp):
             self.save_item_database()
         else:
             pass
-        print('add: ', self.item_database)
+        # print('add: ', self.item_database)
         # self.refresh_item_database(name, category,price,image)
     def refresh_item_database(self, name, category, price, image):
         nam = []
@@ -321,7 +321,7 @@ class ListWindow(Screen, MDApp):
         self.item_database = []
         self.item_database = database
         self.save_item_database()
-        print('refresh: ', self.item_database)
+        # print('refresh: ', self.item_database)
 
     def save_item_database(self):
         with open(self.item_database_fn, 'w') as fd:
@@ -333,7 +333,7 @@ class ListWindow(Screen, MDApp):
         with open(self.item_database_fn) as fd:
             item_database = json.load(fd)
         self.item_database = item_database
-        print('load: ', self.item_database)
+        # print('load: ', self.item_database)
 
     def __init__(self,**kwargs):
         super(ListWindow, self).__init__(**kwargs)
@@ -420,12 +420,11 @@ class ListWindow(Screen, MDApp):
         self.list_number = str(len(self.data))
         # print(self.data)
 
-    def tobespent(self):
-        sum = []
+    def tobespent(self, data):
+        add = []
         for i in range(0, len(self.data)):
-            sum.append(int(self.data[i]['quantity'])* int(self.data[i]['price']))
-        print(sum)
-        return str(sum)
+            add.append(float(self.data[i]['quantity'])* float(self.data[i]['price']))
+        return str(sum(add))
     @property
     def items_fn(self):
         return join(self.user_data_dir, 'items.json')
