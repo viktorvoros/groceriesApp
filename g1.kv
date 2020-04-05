@@ -80,6 +80,8 @@
     IconButtonLeft:
         icon: 'cart-outline'
         on_release:
+            # print(root.list_index)
+            root.parent.parent.parent.parent.parent.ch.add_to_statistics(root.list_index, root.parent.parent.parent.parent.parent.data)
             root.parent.parent.parent.parent.parent.del_item(root.list_index)
             # app.refresh_data(root.list_index, root.parent.parent.parent.parent.parent.list_number)
 
@@ -541,15 +543,21 @@
                     # bold: True
 <ChartWindow>:
     # name: 'ChartWindow'
-    GridLayout:
+    box:box
+    lab:lab
+    BoxLayout:
+        orientation: 'vertical'
+        id: box
         cols: 1
         MDToolbar:
             title: 'My graphs'
             halign: 'center'
             md_bg_color: 0, .4, 0, 1
             specific_text_color: 1, 1, 1, 1
-        MDLabel:
-            text:"make graphs here about payment and nutrition"
+        Label:
+            id: lab
+            text:str(root.spent)
+            color:0,0,0,1
             halign:'center'
 
 <CalendarWindow>:

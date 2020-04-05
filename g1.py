@@ -26,6 +26,8 @@ import matplotlib
 from matplotlib import style
 from matplotlib import pyplot as plt
 from matplotlib import use as mpl_use
+from matplotlib.figure import Figure
+from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 matplotlib.use('module://kivy.garden.matplotlib.backend_kivy')
 # mpl_use('module://kivy.garden.matplotlib.backend_kivy')
 # style.use('dark_background')
@@ -40,17 +42,38 @@ class ScreenManagementHome(ScreenManager):
     # list_number = StringProperty()
     pass
 
-class ChartWindow(Screen, BoxLayout):
+class ScreenManagementChart(ScreenManager):
+    pass
+
+class ChartWindow(Screen):
     list_index = NumericProperty()
     list_title = StringProperty()
     list_content = StringProperty()
+    statistics_database = ListProperty()
+    allTogether = []
+    spent = 3.0
+
+    def add_to_statistics(self, index, data):
+        self.statistics_database.append(data[index])
+        self.allTogether.append(float(data[index]['quantity'])* float(data[index]['price']))
+        self.spent = sum(self.allTogether)
+        print(self.spent)
+        # self.plotSpending()
+
+    def plotSpending(self):
+        # self.label.text = str(self.spent)
+        # self.add_widget(canvas)
+        # self.add_widget(canvas)
+        # self.fig.show()
+        pass
+
     def __init__(self, **kwargs):
         super(ChartWindow, self).__init__(**kwargs)
-        self.fig, self.ax1 = plt.subplots()
-        self.ax1.pie([5,1,2], radius=1)
-        self.mpl_canvas = self.fig.canvas
-        self.add_widget(self.mpl_canvas)
-    pass
+        # self.lab.text = ''
+        # fig, ax = plt.subplots()
+        # plt.bar(1, self.spent)
+        # canvas = fig.canvas
+        # self.add_widget(canvas)
 
 class ListItemWithCounter(OneLineAvatarIconListItem):
     '''List of shopping list'''
@@ -339,6 +362,7 @@ class ListWindow(Screen, MDApp):
         super(ListWindow, self).__init__(**kwargs)
         self.root = ScreenManagementHome()
         self.home = HomeWindow()
+        self.ch = ChartWindow()
         self.load_item_database()
         self.load_items()
         self.list_number = str(len(self.data))
