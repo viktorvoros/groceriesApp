@@ -56,7 +56,8 @@ class ChartWindow(Screen):
     def add_to_statistics(self, index, data):
         self.statistics_database.append(data[index])
         self.allTogether.append(float(data[index]['quantity'])* float(data[index]['price']))
-        self.spent = sum(self.allTogether)
+        spentSum = sum(self.allTogether)
+        self.spent = spentSum
         print(self.spent)
         # self.plotSpending()
 
@@ -73,7 +74,7 @@ class ChartWindow(Screen):
         # fig, ax = plt.subplots()
         # plt.bar(1, self.spent)
         # canvas = fig.canvas
-        # self.add_widget(canvas)
+        self.add_widget(Label(text='333333'))
 
 class ListItemWithCounter(OneLineAvatarIconListItem):
     '''List of shopping list'''
@@ -344,7 +345,7 @@ class ListWindow(Screen, MDApp):
         self.item_database = []
         self.item_database = database
         self.save_item_database()
-        # print('refresh: ', self.item_database)
+        print('refresh: ', self.item_database)
 
     def save_item_database(self):
         with open(self.item_database_fn, 'w') as fd:
@@ -372,6 +373,8 @@ class ListWindow(Screen, MDApp):
     def add_item(self, textinput):
         database = self.item_database
         item_category = ''
+        item_price = '0'
+        item_image = ''
         for i in range(0,len(database)):
             if textinput == database[i]['name']:
                 item_category = database[i]['category']
@@ -409,7 +412,7 @@ class ListWindow(Screen, MDApp):
         self.refresh_items()
         self.save_items()
         self.refresh_item_database(item_name, item_category, item_price, item_image)
-        # self.save_item_database()
+        self.save_item_database()
 
     def load_items(self):
         if not exists(self.items_fn):
@@ -442,7 +445,7 @@ class ListWindow(Screen, MDApp):
         self.data = []
         self.data = data
         self.list_number = str(len(self.data))
-        # print(self.data)
+        print(self.data)
 
     def tobespent(self, data):
         add = []

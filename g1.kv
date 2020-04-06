@@ -88,7 +88,7 @@
     OneLineAvatarIconListItem:
         text: root.item_name
         on_press:
-            root.parent.parent.parent.parent.parent.item_info(root.item_index, self.text)
+            root.parent.parent.parent.parent.parent.item_info(root.list_index, self.text)
         CounterLabel:
             text: '\u20ac ' + root.item_price
             size_hint_x: None
@@ -543,21 +543,15 @@
                     # bold: True
 <ChartWindow>:
     # name: 'ChartWindow'
-    box:box
-    lab:lab
-    BoxLayout:
-        orientation: 'vertical'
-        id: box
+    GridLayout:
         cols: 1
         MDToolbar:
             title: 'My graphs'
             halign: 'center'
             md_bg_color: 0, .4, 0, 1
             specific_text_color: 1, 1, 1, 1
-        Label:
-            id: lab
-            text:str(root.spent)
-            color:0,0,0,1
+        MDLabel:
+            text:"make graphs here about payment and nutrition"
             halign:'center'
 
 <CalendarWindow>:
