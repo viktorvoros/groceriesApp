@@ -376,8 +376,8 @@
                     spacing: dp(2)
 
 <ListWindow>:
-    on_list_content: app.set_list_content(self.list_index, self.list_content)
-    on_list_title: app.set_list_title(self.list_index, self.list_title)
+    on_list_content: self.home.set_list_content(self.list_index, self.list_content)
+    on_list_title: self.home.set_list_title(self.list_index, self.list_title)
 
     item:item
     listGrid:listGrid
@@ -406,7 +406,7 @@
                 md_bg_color: 0, 0.4, 0, 1
                 on_release:
                     self.parent.parent.parent.parent.go_lists()
-                    app.refresh_data(root.list_index, root.list_number)
+                    root.home.refresh_data(root.list_index, root.list_number)
                     root.save_items()
             MDLabel:
                 id: tb

@@ -1,4 +1,5 @@
 import json
+from kivy.storage.jsonstore import JsonStore
 from os.path import join, exists
 import kivy
 from kivy.lang import Builder
@@ -162,7 +163,7 @@ class MainWindow(Screen):
 
     pass
 
-class HomeWindow(Screen,MDApp):
+class HomeWindow(Screen):
 
     data = ListProperty()
     # list_number = StringProperty()
@@ -237,13 +238,13 @@ class HomeWindow(Screen,MDApp):
         self.refresh_lists()
 
     def save_lists(self):
-        with open(self.lists_fn, 'w') as fd:
+        with open('h.json', 'w') as fd:
             json.dump(self.data, fd)
 
     def load_lists(self):
-        if not exists(self.lists_fn):
+        if not exists('h.json'):
             return
-        with open(self.lists_fn) as fd:
+        with open('h.json') as fd:
             data = json.load(fd)
         self.data = data
 
@@ -278,18 +279,19 @@ class HomeWindow(Screen,MDApp):
         # print(self.data)
 
 
-    @property
-    def lists_fn(self):
-        return join(self.user_data_dir, 'lists.json')
-    @property
-    def items_fn(self):
-        return join(self.user_data_dir, 'items.json')
+    # @property
+    # def lists_fn(self):
+    #     return join(self.user_data_dir + 'mydir\\', 'lists.json')
+    # @property
+    # def items_fn(self):
+    #     return join(self.user_data_dir, 'items.json')
 
-class ListWindow(Screen, MDApp):
+class ListWindow(Screen):
     list_index = NumericProperty()
     list_title = StringProperty()
     list_content = StringProperty()
     list_number = StringProperty()
+    list_screen = StringProperty()
     data = ListProperty()
     item_database = ListProperty()
 
@@ -348,13 +350,13 @@ class ListWindow(Screen, MDApp):
         print('refresh: ', self.item_database)
 
     def save_item_database(self):
-        with open(self.item_database_fn, 'w') as fd:
+        with open('item_database.json', 'w') as fd:
             json.dump(self.item_database, fd)
 
     def load_item_database(self):
-        if not exists(self.items_fn):
+        if not exists('item_database.json'):
             return
-        with open(self.item_database_fn) as fd:
+        with open('item_database.json') as fd:
             item_database = json.load(fd)
         self.item_database = item_database
         # print('load: ', self.item_database)
@@ -368,6 +370,7 @@ class ListWindow(Screen, MDApp):
         self.load_items()
         self.list_number = str(len(self.data))
         self.item_number = 0
+        print(self.name)
 
 
     def add_item(self, textinput):
@@ -415,9 +418,10 @@ class ListWindow(Screen, MDApp):
         self.save_item_database()
 
     def load_items(self):
-        if not exists(self.items_fn):
+        # print(self.list_index)
+        if not exists('{}.json'.format(self.name)):
             return
-        with open(self.items_fn) as fd:
+        with open('{}.json'.format(self.name)) as fd:
             data = json.load(fd)
         self.data = data
         self.list_number = str(len(self.data))
@@ -437,7 +441,7 @@ class ListWindow(Screen, MDApp):
         self.refresh_items()
 
     def save_items(self):
-        with open(self.items_fn, 'w') as fd:
+        with open('{}.json'.format(self.name), 'w') as fd:
             json.dump(self.data, fd)
 
     def refresh_items(self):
@@ -452,12 +456,12 @@ class ListWindow(Screen, MDApp):
         for i in range(0, len(self.data)):
             add.append(float(self.data[i]['quantity'])* float(self.data[i]['price']))
         return str(sum(add))
-    @property
-    def items_fn(self):
-        return join(self.user_data_dir, 'items.json')
-    @property
-    def item_database_fn(self):
-        return join(self.user_data_dir, 'item_database.json')
+    # @property
+    # def items_fn(self):
+    #     return join(self.user_data_dir, 'items.json')
+    # @property
+    # def item_database_fn(self):
+    #     return join(self.user_data_dir, 'item_database.json')
 
 class RecipesWindow(Screen):
     pass
