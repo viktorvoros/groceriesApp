@@ -3,6 +3,7 @@ from kivy.storage.jsonstore import JsonStore
 from os.path import join, exists
 import kivy
 from kivy.lang import Builder
+from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy.uix.screenmanager import ScreenManager, Screen, SlideTransition
 from kivymd.app import MDApp
@@ -50,32 +51,72 @@ class ChartWindow(Screen):
     list_index = NumericProperty()
     list_title = StringProperty()
     list_content = StringProperty()
-    statistics_database = ListProperty()
-    allTogether = []
-    spent = 3.0
-
-    def add_to_statistics(self, index, data):
-        self.statistics_database.append(data[index])
-        self.allTogether.append(float(data[index]['quantity'])* float(data[index]['price']))
-        spentSum = sum(self.allTogether)
-        self.spent = spentSum
-        print(self.spent)
-        # self.plotSpending()
-
-    def plotSpending(self):
-        # self.label.text = str(self.spent)
-        # self.add_widget(canvas)
-        # self.add_widget(canvas)
-        # self.fig.show()
-        pass
+    stat = ListProperty()
+    spent = 0.0
+    # lab = ObjectProperty(None)
+    # lab.text='2'
 
     def __init__(self, **kwargs):
+        global canvas
         super(ChartWindow, self).__init__(**kwargs)
+
+        self.plotStat()
         # self.lab.text = ''
+        self.fig, self.ax1 = plt.subplots()
+
+        plt.bar(1,self.spent)
+
+
+
+        Clock.schedule_once(self._do_setup)
+
+    def _do_setup(self, *l):
+        self.pl()
+
+    def pl(self):
+
+        canvas = FigureCanvasKivyAgg(plt.gcf())
+        self.ids.box.add_widget(canvas)
+        canvas.draw()
+
+    def updatePlot(self):
+        # self.plotStat()
+        plt.clf()
+        # plt.bar(1, self.spent)
+        # canvas.draw()
+        # fig, ax = plt.subplots()
+        # plt.bar('Mar', self.spent)
+        # self.canvas.draw
+
+    def loadStat(self):
+        if not exists('stat.json'.format(self.name)):
+            return
+        with open('stat.json'.format(self.name)) as fd:
+            stat = json.load(fd)
+        self.stat = stat
+
+    # def changeLabel(self):
+    #     self.ids.lab.text = 'pressed'
+    #     self.ch.ids.gr.add_widget(Button(text='added'))
+
+    def plotStat(self):
+        self.loadStat()
+        nam = []
+        for i in range(0,len(self.stat)):
+            nam.append(float(self.stat[i]['quantity'])* float(self.stat[i]['price']))
+        print(sum(nam))
+        self.spent =sum(nam)
         # fig, ax = plt.subplots()
         # plt.bar(1, self.spent)
         # canvas = fig.canvas
-        self.add_widget(Label(text='333333'))
+class MyFigure(FigureCanvasKivyAgg):
+    def __init__(self, **kwargs):
+        super(MyFigure, self).__init__(plt.gcf(), **kwargs)
+        fig, ax = plt.subplots()
+        plt.bar(1, 2)
+        canvas = fig.canvas
+        self.add_widget(canvas)
+
 
 class ListItemWithCounter(OneLineAvatarIconListItem):
     '''List of shopping list'''
@@ -294,6 +335,9 @@ class ListWindow(Screen):
     list_screen = StringProperty()
     data = ListProperty()
     item_database = ListProperty()
+    statistics_database = ListProperty()
+    allTogether = []
+    spent = 3.0
 
 
     def _get_data_for_items(self):
@@ -368,6 +412,7 @@ class ListWindow(Screen):
         self.ch = ChartWindow()
         self.load_item_database()
         self.load_items()
+        self.loadStatistics()
         self.list_number = str(len(self.data))
         self.item_number = 0
         print(self.name)
@@ -456,7 +501,24 @@ class ListWindow(Screen):
         for i in range(0, len(self.data)):
             add.append(float(self.data[i]['quantity'])* float(self.data[i]['price']))
         return str(sum(add))
-    # @property
+
+    def add_to_statistics(self, index, data):
+        self.statistics_database.append(data[index])
+        self.allTogether.append(float(data[index]['quantity'])* float(data[index]['price']))
+        spentSum = sum(self.allTogether)
+        self.spent = spentSum
+        self.saveStatistics()
+
+    def loadStatistics(self):
+        if not exists('stat.json'.format(self.name)):
+            return
+        with open('stat.json'.format(self.name)) as fd:
+            stat = json.load(fd)
+        self.statistics_database = stat
+
+    def saveStatistics(self):
+        with open('stat.json', 'w') as fd:
+            json.dump(self.statistics_database, fd)
     # def items_fn(self):
     #     return join(self.user_data_dir, 'items.json')
     # @property
@@ -485,7 +547,7 @@ class SettingsWindow(Screen):
 class g1App(MDApp):
     def build(self):
         self.theme_cls.primary_palette = "Green"
-        Window.size = (400, 800)
+
         return MainWindow()
 
 
