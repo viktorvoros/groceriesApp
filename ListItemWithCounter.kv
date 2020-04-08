@@ -1,0 +1,27 @@
+<ListItemWithCounter>:
+    canvas.before:
+        Color:
+            rgba: 1,1,1,1
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [3]
+            # border: [10,10,10,10]
+    text: root.list_title
+    color: 0, 0,0,0
+    on_release:
+        root.parent.parent.parent.parent.parent.edit_list(root.list_index, root.list_number, root.list_screen)
+        # print(root)
+
+    CounterLabel:
+        text: root.list_number
+        theme_text_color: "Custom"
+        color: 0.4,0.4,0.4,1
+
+
+    IconButtonRight:
+        icon: 'delete'
+        theme_text_color: "Custom"
+        text_color: 0.4,0.4,0.4,1
+        on_release:
+            root.parent.parent.parent.parent.parent.del_list(root.list_index, root.list_screen)

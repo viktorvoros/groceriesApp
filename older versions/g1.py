@@ -61,7 +61,6 @@ class ChartWindow(Screen):
         super(ChartWindow, self).__init__(**kwargs)
 
         self.plotStat()
-        # self.lab.text = ''
         self.fig, self.ax1 = plt.subplots()
 
         plt.bar(1,self.spent)
@@ -178,8 +177,8 @@ class ItemPopup(Popup):
         # print (self.caller)
 
 class CounterLabel(IRightBodyTouch, MDLabel):
-    pass
-    # list_number = NumericProperty()
+    # pass
+    list_number = NumericProperty()
     # list_number =
 
 class ItemCounterLabel(IRightBodyTouch, MDLabel):
@@ -196,9 +195,6 @@ class IconButtonLeft(ILeftBodyTouch, MDIconButton):
 
 class LeftCheckbox(ILeftBodyTouch, MDCheckbox):
     '''Custom right container.'''
-
-class Tab(FloatLayout, MDTabsBase):
-    pass
 
 class MainWindow(Screen):
 
@@ -228,6 +224,7 @@ class HomeWindow(Screen):
         super(HomeWindow, self).__init__(**kwargs)
         self.load_lists()
         # self.load_item_database()
+        print(self.data)
         self.nb = 0
 
     def clearTxt(self, TextInput):
@@ -263,7 +260,7 @@ class HomeWindow(Screen):
         self.list_number = numberOfItems
         self.data[list_index]['number'] = str(view.list_number)
         self.parent.current = view.name
-        # self.refresh_lists()
+        self.refresh_lists()
 
     def set_list_content(self, list_index, list_content):
         self.data[list_index]['content'] = list_content
@@ -293,6 +290,7 @@ class HomeWindow(Screen):
         data = self.data
         self.data = []
         self.data = data
+        self.save_lists()
         # print(self.data)
 
     def refresh_data(self, list_index, list_number):
@@ -301,7 +299,8 @@ class HomeWindow(Screen):
         self.data[list_index] = []
         self.data[list_index] = data
         self.save_lists()
-        # print(self.data)
+        # self.refresh_lists()
+        print(self.data)
 
     # def go_lists(self):
     #     self.parent.transition.direction = 'right'
@@ -352,6 +351,7 @@ class ListWindow(Screen):
             for index, item in enumerate(self.data)]
 
     data_for_items = AliasProperty(_get_data_for_items, bind=['data'])
+
     def _get_data_for_item_database(self):
         return [{'item_index': index,
                 'item_name': item['name'],

@@ -306,6 +306,7 @@
 <HomeWindow>:
     name: 'lists'
     # listGrid:listGrid
+    id: h
     list:list
     GridLayout:
         cols:1
@@ -344,7 +345,7 @@
                     on_release:
                         root.add_list(list.text, '0', '0')
                         root.clearTxt(list.text)
-                        root.save_lists()
+                        # root.save_lists()
 
                 MDTextField:
                     id: listText
@@ -357,7 +358,7 @@
                     on_text_validate:
                         root.add_list(self.text, '0', '0')
                         root.clearTxt(self.text)
-                        root.save_lists()
+                        # root.save_lists()
 
             MDLabel:
                 text: ''
@@ -409,7 +410,7 @@
                 md_bg_color: 0, 0.4, 0, 1
                 on_release:
                     self.parent.parent.parent.parent.go_lists()
-                    root.home.refresh_data(root.list_index, root.list_number)
+                    self.parent.parent.parent.parent.get_screen('lists').refresh_data(root.list_index, root.list_number)
                     root.save_items()
             MDLabel:
                 id: tb

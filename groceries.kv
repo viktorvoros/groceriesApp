@@ -1,573 +1,582 @@
-#: import Window kivy.core.window
+#: include CalendarWindow.kv
+#: include ScreenManagementHome.kv
+#: include ListItemWithCounter.kv
+#: include ListWindow.kv
 
-# colorcode green: #006600
-<Button>:
-    # font_size:10
-    color:1,1,1,1
-    bold: True
-    # background_color:[0,0,1,0.5]
-    # size_hint:0.3, 0.5     # width, height in %
-
-<ListItemWithCounter>:
-
-
-<ListItemWithCheckbox>:
-
-    IconRightWidget:
-        icon: root.icon
-
-    LeftCheckbox:
-
-<IconButton@Button>:
-    canvas:
-        Rectangle:
-            source:'trashcan.png'
-            pos: self.pos
-            size: 30,30
-
-
-<StrokeButton@Button>:
-    background_color: (0,0,0,0)
-    background_normal: ''
-    back_color: (1,1,1,1)
-    border_radius: 12
-    color: self.back_color
-    bold: True
-    canvas.before:
-        Color:
-            rgba: self.back_color
-        Line:
-            circle: (self.pos[0] + self.width*0.5, self.pos[1] + self.height*0.5, self.border_radius)
-            width: 1.1
-
-<RoundButton@Button>:
-    text: ''
-    bold: True
-    font_size: "30sp"
-    background_color: 0, 0, 0, 0
-    background_normal: ''
-    size_hint_x: None
-    width: 40
-    size_hint_y: None
-    height: 40
-    # back_color: (1,1,1,0)
-    border_radius: [20]
-    canvas.before:
-        Color:
-            rgba: (0,0,0,0) if self.state == "normal" else (1,1,1,0.5)
-        RoundedRectangle:
-            size: self.size
-            pos: self.pos
-            radius: self.border_radius
-
-# <BackButton@Button>:
-#     text: ''
-#     bold: True
-#     font_size: "25sp"
-#     background_color: 0, 0, 0, 0
-#     background_normal: ''
-#     size_hint_x: None
-#     width: 40
-#     size_hint_y: None
-#     height: 40
-#     # back_color: (1,1,1,0)
-#     border_radius: [20]
+# <ListItemWithCounter>:
 #     canvas.before:
 #         Color:
-#             rgba: (0,0,0,0) if self.state == "normal" else (1,1,1,0.5)
+#             rgba: 1,1,1,1
 #         RoundedRectangle:
-#             size: self.size
 #             pos: self.pos
-#             radius: self.border_radius
-#     Image:
-#         source: 'icons/back.png'
-#         width: 20
-#         height: 20
-#         size_hint_y: None
-#         size_hint_x: None
-#         pos: self.parent.pos[0] + self.parent.width *0.5 -self.width/2, self.parent.pos[1] + self.parent.height *0.5 - self.height/2
-#         keep_ratio: True
-#         allow_stretch: True
+#             size: self.size
+#             radius: [3]
+#             # border: [10,10,10,10]
+#     text: root.list_title
+#     color: 0, 0,0,0
+#     on_release:
+#         root.parent.parent.parent.parent.parent.edit_list(root.list_index, root.list_number, root.list_screen)
+#         # print(root)
 #
-# <AddButton@Button>:
-#     text: '+'
-#     bold: True
-#     font_size: "25sp"
-#     background_color: 0, 0, 0, 0
-#     background_normal: ''
-#     size_hint_x: None
-#     width: 40
-#     size_hint_y: None
-#     height: 40
-#     # back_color: (1,1,1,0)
-#     border_radius: [20]
-#     canvas.before:
-#         Color:
-#             rgba: (0,0,0,0) if self.state == "normal" else (1,1,1,0.5)
-#         RoundedRectangle:
-#             size: self.size
-#             pos: self.pos
-#             radius: self.border_radius
+#     CounterLabel:
+#         text: root.list_number
+#         theme_text_color: "Custom"
+#         color: 0.4,0.4,0.4,1
+#
+#
+#     IconButtonRight:
+#         icon: 'delete'
+#         theme_text_color: "Custom"
+#         text_color: 0.4,0.4,0.4,1
+#         on_release:
+#             root.parent.parent.parent.parent.parent.del_list(root.list_index, root.list_screen)
 
-<MenuButton@ToggleButton>:
-    background_color: (0.9,0.9,0.9,1) if self.state == 'normal' else (0,0.6,0,1)
-    background_normal: ''
-    group: 'menu'
-    bold: True
-    color: (0,0.4,0,1) if self.state =='normal' else (1,1,1,1)
-    size_hint_y: None
-    height: 40
-    on_press:
-        self.state == 'down'
+<SwipeButton>:
+    listItem:listItem
+    text: ''
+    color: 0, 0,0,1
+    ignore_perpendicular_swipes: True
+    min_move: 20/self.width
+    index:1
+    canvas.before:
+        Color:
+            rgba: 1,1,1,1
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [3]
+    Button:
+        text: 'Done'
+        color: 1,1,1,1
+        background_color:(0,1,0,1) if self.state == 'normal' else (0,1,0,1)
+        on_press:
+            root.parent.parent.parent.parent.parent.del_item(root.item_index)
+    ListItem:
+        id: listItem
+        text: root.item_name
+        color: 0,0,0,1
+        on_press:
+            root.parent.parent.parent.parent.parent.item_info(root.item_index, listItem.text)
+
+    Button:
+        text: 'Delete'
+        color: 1,1,1,1
+        background_color:(1,0,0,1) if self.state == 'normal' else (1,0,0,1)
+        on_press:
+            root.parent.parent.parent.parent.parent.del_item(root.item_index)
+
+<ListItem>:
+    canvas.before:
+        Color:
+            rgba: 1,1,1,1
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [3]
+    text: root.item_name
+    color: 0, 0,0,0
+    # secondary_text: root.item_quantity
+    # secondary_font_style: 'Subtitle2'
+    orientation: 'horizontal'
+    # on_press:
+    #     root.parent.parent.parent.parent.parent.item_info(root.list_index, self.text)
+    IconButtonLeft:
+        icon: 'cart-outline'
+        on_release:
+            # print(root.list_index)
+            root.parent.parent.parent.parent.parent.add_to_statistics(root.list_index, root.parent.parent.parent.parent.parent.data)
+            root.parent.parent.parent.parent.parent.del_item(root.list_index)
+            # app.refresh_data(root.list_index, root.parent.parent.parent.parent.parent.list_number)
+
+    OneLineAvatarIconListItem:
+        text: root.item_name
+        on_press:
+            root.parent.parent.parent.parent.parent.item_info(root.list_index, self.text)
+        CounterLabel:
+            text: '\u20ac ' + root.item_price
+            size_hint_x: None
+            width: 50
+            theme_text_color: "Custom"
+            text_color: 0.4,0.4,0.4,1
+
+    MDIconButton:
+        icon: root.icon
+        theme_text_color: 'Custom'
+        text_color: 0,0,0.4,1
+
+<ItemPopup>:
+    item_name:item_name
+    item_category:item_category
+    item_price:item_price
+    item_quantity:item_quantity
+    item_image:item_image
+    item_note:item_note
+    id: pop
+    # background_color:0, 0, 0, 0
+    separator_height: 0
+    # title:''
+    BoxLayout:
+        orientation: 'vertical'
+        canvas.before:
+            Color:
+                rgba: 0,0.4,0,1
+            RoundedRectangle:
+                size: self.size
+                pos: self.pos
+                radius: [16,16,16,16]
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: 60
+            padding: [10,0,10,0]
+            MDIconButton:
+                # size_hint_x: 0.1
+                # width: 30
+                icon: 'keyboard-backspace'
+                theme_text_color: "Custom"
+                text_color: 1,1,1,1
+                item_name: item_name.hint_text if item_name.hint_text != "" else item_name.text
+                on_release:
+                    root.caller.edit_item(item_name.text, item_category.text, item_quantity.text, item_price.text, item_note.text, item_image.text)
+                    root.caller.refresh_item_database(item_name.text, item_category.text, item_price.text, item_image.text)
+                    pop.dismiss()
+
+            MDTextField:
+                id: item_name
+                size_hint_y: 0.85
+                hint_text: "Item"
+                text: pop.item_name
+                # foreground_color: (1,1,1,1)
+                color_mode: "custom"
+                current_hint_text_color: 1,1,1,1
+                line_color_normal: 0.8,0.8,0.8,1
+                line_color_focus: 1,1,1,1
+                on_text_validate:
+                    root.caller.edit_item(item_name.text, item_category.text, item_quantity.text, item_price.text, item_note.text, item_image.text)
+            MDIconButton:
+                icon: 'delete'
+                theme_text_color: "Custom"
+                text_color:1,1,1,1
+                on_release:
+                    root.caller.del_item(root.caller.item_number)
+                    pop.dismiss()
+        BoxLayout:
+            orientation: 'vertical'
+            spacing: 10
+            canvas.before:
+                Color:
+                    rgba: 1,1,1,1
+                RoundedRectangle:
+                    size: self.size
+                    pos: self.pos
+                    radius: [0,0,16,16]
+            Label:
+                text:''
+                size_hint_y: None
+                height: 10
+            BoxLayout:
+                orientation: 'horizontal'
+                padding: [20,0,20,0]
+                spacing: 10
+
+                BoxLayout:
+                    orientation: 'vertical'
+                    row_default_height: 30
+                    row_force_default: True
+
+                    MDTextField:
+                        id: item_category
+                        hint_text: "Category"
+                        text: root.item_category
+                        color_mode: "custom"
+                        current_hint_text_color: 0,0,0,1
+                        line_color_normal: 0.4,0.4,0.4,0.5
+                        line_color_focus: 0,0.4,0,1
+                        on_text_validate:
+                            root.item_category = item_category.text
+                            root.caller.edit_item(item_name.text, item_category.text, item_quantity.text, item_price.text, item_note.text, item_image.text)
+
+                    MDTextField:
+                        id: item_quantity
+                        hint_text: "Quantity"
+                        text: root.item_quantity
+                        color_mode: "custom"
+                        current_hint_text_color: 0,0,0,1
+                        line_color_normal: 0.4,0.4,0.4,0.5
+                        line_color_focus: 0,0.4,0,1
+                        on_text_validate:
+                            root.item_quantity = item_quantity.text
+                            root.caller.edit_item(item_name.text, item_category.text, item_quantity.text, item_price.text, item_note.text, item_image.text)
+                    MDTextField:
+                        id: item_price
+                        hint_text: "Price"
+                        text: root.item_price
+                        color_mode: "custom"
+                        current_hint_text_color: 0,0,0,1
+                        line_color_normal: 0.4,0.4,0.4,0.5
+                        line_color_focus: 0,0.4,0,1
+                        on_text_validate:
+                            root.item_price = item_price.text
+                            root.caller.edit_item(item_name.text, item_category.text, item_quantity.text, item_price.text, item_note.text, item_image.text)
+
+                    MDTextField:
+                        id: item_note
+                        hint_text: "Note"
+                        text: root.item_note
+                        color_mode: "custom"
+                        current_hint_text_color: 0,0,0,1
+                        line_color_normal: 0.4,0.4,0.4,0.5
+                        line_color_focus: 0,0.4,0,1
+                        on_text_validate:
+                            root.caller.edit_item(item_name.text, item_category.text, item_quantity.text, item_price.text, item_note.text, item_image.text)
+
+                BoxLayout:
+                    orientation: 'vertical'
+                    spacing: 10
+                    Label:
+                        id: item_image
+                        text: root.item_image
+                        color: 1,1,1,1
+                        canvas.before:
+                            Color:
+                                rgba: 0,0.4,0,1
+                            Rectangle:
+                                size: self.size
+                                pos: self.pos
+                    Button:
+                        text: 'Change photo'
+                        size_hint_y: 0.2
+                    Image:
+                        source: 'nutri-score.png'
+            Widget:
+                size_hint_y: None
+                height: 10
+
+
+# <ScreenManagementHome>:
+#     id: sm
+#     transition: self.transition
+#     HomeWindow:
+    # ListWindow:
+
+<ScreenManagementChart>:
+    ChartWindow:
 
 <MainWindow>:
-    sm:sm
+
     BoxLayout:
         orientation:'vertical'
-        # ScreenManager:
-        #     id: sm
-        #     # MainWindow:
-        #     HomeWindow:
-        #     RecipesWindow:
-        #     ChartWindow:
-        #     CalendarWindow:
-        #     SettingsWindow:
-        #     ListWindow:
-        #     CatalogueWindow:
-        MDToolbar:
-            title: 'My lists'
-            
-            md_bg_color: 0, .4, 0, 1
-            specific_text_color: 1, 1, 1, 1
+        # MDToolbar:
+        #     # title: 'My lists'
+        #     md_bg_color: 0, .4, 0, 1
+        #     specific_text_color: 1, 1, 1, 1
+        #     size_hint_y: None
+        #     height: 20
 
         MDBottomNavigation:
             panel_color: 1, 1, 1, 1
 
             MDBottomNavigationItem:
                 name: 'HomeWindow'
-                # text: 'Home'
+                text: 'Home'
                 icon: 'home'
-                HomeWindow:
-                # MDLabel:
-                #     text: 'Python'
-                #     halign: 'center'
+                ScreenManagementHome:
 
             MDBottomNavigationItem:
                 name: 'ChartWindow'
-                # text: 'C++'
+                text: 'Graphs'
                 icon: 'chart-bar'
-                ListWindow:
+                ChartWindow:
 
             MDBottomNavigationItem:
                 name: 'RecipesWindow'
-                text: ''
-                icon: 'settings'
+                text: 'Recipes'
+                icon: 'food'
                 RecipesWindow:
-    # BoxLayout:
-    #     canvas:
-    #         Color:
-    #             rgba: 1, 1, 1, 1
-    #         Rectangle:
-    #             size: self.size
-    #             pos: self.pos
-    #     orientation: "vertical"
-    #     ScreenManager:
-    #         id: sm
-    #         HomeWindow:
-    #         RecipesWindow:
-    #         ChartWindow:
-    #         CalendarWindow:
-    #         SettingsWindow:
-    #         ListWindow:
-    #         CatalogueWindow:
 
-        # GridLayout:
-        #     homeBtn:homeBtn
-        #     recipeBtn:recipeBtn
-        #     chartBtn:chartBtn
-        #     calendarBtn:calendarBtn
-        #     settingsBtn:settingsBtn
-        #     cols: 5
-        #     rows: 1
-        #     size_hint_y: None
-        #     height: 40
-        #
-        #     MenuButton:
-        #         id:homeBtn
-        #         state:'down'
-        #         homesource: "icons/home-white.png" if self.state=='down' else "icons/home-green.png"
-        #         on_state:
-        #             sm.current = "HomeWindow"
-        #         Image:
-        #             source: homeBtn.homesource
-        #             width: 30
-        #             height: 30
-        #             size_hint_y: None
-        #             size_hint_x: None
-        #             pos: self.parent.pos[0] + self.parent.width *0.5 -self.width/2, self.parent.pos[1] + self.parent.height *0.5 - self.height/2
-        #             # pos_hint: {'x': 1, 'y': 1}
-        #             # y: self.parent.y + 0.8* self.parent.height -0.5 * self.parent.width/self.image_ratio
-        #             # x: self.parent.x+ .8* self.parent.height -.5 * self.parent.width/self.image_ratio
-        #             keep_ratio: True
-        #             allow_stretch: True
-        #
-        #     MenuButton:
-        #         id: chartBtn
-        #         text: ''
-        #         homesource: "icons/graph-white.png" if self.state=='down' else "icons/graph-green.png"
-        #         on_state:
-        #             sm.current = "ListWindow"
-        #         Image:
-        #             source: chartBtn.homesource
-        #             width: 30
-        #             height: 30
-        #             size_hint_y: None
-        #             size_hint_x: None
-        #             pos: self.parent.pos[0] + self.parent.width *0.5 -self.width/2, self.parent.pos[1] + self.parent.height *0.5 - self.height/2
-        #             keep_ratio: True
-        #             allow_stretch: True
-        #     MenuButton:
-        #         id: recipeBtn
-        #         text: ''
-        #         homesource: "icons/recipe2-white.png" if self.state=='down' else "icons/recipe2-green.png"
-        #         on_state:
-        #             sm.current = "CatalogueWindow"
-        #         Image:
-        #             source: recipeBtn.homesource
-        #             width: 30
-        #             height: 30
-        #             size_hint_y: None
-        #             size_hint_x: None
-        #             pos: self.parent.pos[0] + self.parent.width *0.5 -self.width/2, self.parent.pos[1] + self.parent.height *0.5 - self.height/2
-        #             keep_ratio: True
-        #             allow_stretch: True
-        #     MenuButton:
-        #         id: calendarBtn
-        #         text: ''
-        #         homesource: "icons/calendar-white.png" if self.state=='down' else "icons/calendar-green.png"
-        #         on_state:
-        #             sm.current = "CalendarWindow"
-        #         Image:
-        #             source: calendarBtn.homesource
-        #             width: 30
-        #             height: 30
-        #             size_hint_y: None
-        #             size_hint_x: None
-        #             pos: self.parent.pos[0] + self.parent.width *0.5 -self.width/2, self.parent.pos[1] + self.parent.height *0.5 - self.height/2
-        #             keep_ratio: True
-        #             allow_stretch: True
-        #     MenuButton:
-        #         id: settingsBtn
-        #         text: ''
-        #         homesource: "icons/settings-white.png" if self.state=='down' else "icons/settings-green.png"
-        #         on_state:
-        #             sm.current = "SettingsWindow"
-        #         Image:
-        #             source: settingsBtn.homesource
-        #             width: 30
-        #             height: 30
-        #             size_hint_y: None
-        #             size_hint_x: None
-        #             pos: self.parent.pos[0] + self.parent.width *0.5 -self.width/2, self.parent.pos[1] + self.parent.height *0.5 - self.height/2
-        #             keep_ratio: True
-        #             allow_stretch: True
+            MDBottomNavigationItem:
+                name: 'CalendarWindow'
+                text: 'Calendar'
+                icon: 'calendar'
+                CalendarWindow:
+
+            MDBottomNavigationItem:
+                name: 'RecipesWindow'
+                text: 'Settings'
+                icon: 'settings'
+                SettingsWindow:
+
 <HomeWindow>:
-    name:"HomeWindow"
+    name: 'lists'
+    # listGrid:listGrid
+    id: h
     list:list
-    listGrid:listGrid
-    canvas:
-        Color:
-            rgba: 1, 1, 1, 1
-        Rectangle:
-            pos: self.pos
-            size: self.size
     GridLayout:
-        cols: 1
-        # rows:
-        canvas:
-            Color:
-                rgba: 1, 1, 1, 1
-            Rectangle:
-                pos: self.pos
-                size: self.size
-
-        GridLayout:
-            cols:1
-            # rows:
+        cols:1
+        MDToolbar:
+            title: 'My lists'
+            halign: 'center'
+            md_bg_color: 0, .4, 0, 1
+            specific_text_color: 1, 1, 1, 1
+        Label:
+            text:''
             size_hint_y: None
-            height: 130
-            row_default_height: 30
-            row_force_default: True
-            canvas:
-                Color:
-                    rgba: 0, 0.4, 0, 1
-                Rectangle:
-                    pos: self.pos
-                    size: self.size
-            Label:
-                text:""
-            Label:
-                text: "My shopping lists"
-                font_size: "20sp"
-                color: 1, 1, 1, 1
-                # bold: True
-            Label:
-                text:""
+            height: 10
+        GridLayout:
+            cols: 1
+            padding: 10,0,10,0
             GridLayout:
-                cols: 3
-                # rows:
-                Label:
-                    text:""
-                    size_hint_x: None
-                    width: 10
+                cols: 2
+                size_hint_y: None
+                height: 60
+                row_default_height: 60
+                row_force_default: True
+                padding: 0,0,30,0
+                canvas:
+                    Color:
+                        rgba: 0,0.4,0,1
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [3]
                 MDIconButton:
                     icon: "plus"
                     pos_hint: {"center_x": .5, "center_y": .5}
+                    valign: 'center'
                     theme_text_color: "Custom"
-                    text_color: app.theme_cls.primary_color
-                    on_press:
-                        root.listBtn(list.text)
+                    text_color: 1,1,1,1
                     on_release:
-                        root.listBtnRelease()
+                        root.add_list(list.text, '0', '0')
+                        root.clearTxt(list.text)
+                        # root.save_lists()
 
-                # RoundButton:
-                #     text: '+'
-                #     id: listBtn
-                #     on_press:
-                #         root.listBtn(list.text)
-                #     on_release:
-                #         root.listBtnRelease()
                 MDTextField:
+                    id: listText
                     hint_text: "New list..."
+                    color_mode: "custom"
+                    current_hint_text_color: 1,1,1,1
+                    line_color_normal: 0.8,0.8,0.8,1
+                    line_color_focus: 1,1,1,1
                     id: list
                     on_text_validate:
-                        root.listBtn(list.text)
-                        root.listBtnRelease()
-                # TextInput:
-                #     id: list
-                #     text:"New list..."
-                #     foreground_color: 1,1,1,1
-                #     font_size:'20sp'
-                #     bold: True
-                #     multiline:False
-                #     size_hint_y: None
-                #     height: self.minimum_height
-                #     size_hint_x:None
-                #     width: 250
-                #     background_color: (0,0,1,0)
-                #     cursor_color: (1,1,1,1)
-                #     on_focus: self.text = ""
-                #     on_text_validate:
-                #         root.listBtn(list.text)
-        ScrollView:
-            do_scroll_x: False
-            do_scroll_y: True
-            # GridLayout:
-            #     cols: 1
-            #     # id: listGrid
-            #     size_hint_y: None
-            #     height: self.minimum_height
-            #     row_default_height: '30dp'
-            #     row_force_default: True
-            #     # rows:
-            #     Button:
-            #         text: "List 1"
-            #         size_hint_y: None
-            #         height: 30
-            #         on_press:
-            #             # root.enterList()
-            #             root.manager.current = 'ListWindow'
-            #             root.manager.transition.direction = "left"
-            MDList:
-                id: listGrid
-                  # ListItemWithCheckbox:
+                        root.add_list(self.text, '0', '0')
+                        root.clearTxt(self.text)
+                        # root.save_lists()
 
-<ListWindow>:
-    name:"ListWindow"
-    item:item
-    listContainer:listContainer
-    canvas:
-        Color:
-            rgba: 1, 1, 1, 1
-        Rectangle:
-            pos: self.pos
-            size: self.size
-    GridLayout: # main window
-        cols: 1
-        # size: root.width - 300, root.height - 300
-        # pos: 150, 150
-        GridLayout: # input plus chart button
-            cols:1
-            rows:4
-            size_hint_y: None
-            height: 150
-            row_default_height: 30
-            row_force_default: True
-            canvas.before:
-                Color:
-                    rgba: 0, 0.4, 0, 1
-                Rectangle:
-                    pos: self.pos
-                    size: self.size
-            Label:
-                text:""
-            GridLayout: # title and info button
-                cols: 5
-                rows: 1
-                Label:
-                    text: ''
-                    size_hint_x: None
-                    width: 10
-                RoundButton:
-                    # text:'<'
-                    on_release:
-                        root.manager.current = "HomeWindow"
-                        root.manager.transition.direction = "right"
-                    Image:
-                        source: 'icons/back.png'
-                        width: 20
-                        height: 20
-                        size_hint_y: None
-                        size_hint_x: None
-                        pos: self.parent.pos[0] + self.parent.width *0.5 -self.width/2, self.parent.pos[1] + self.parent.height *0.5 - self.height/2
-                        keep_ratio: True
-                        allow_stretch: True
+            MDLabel:
+                text: ''
+                size_hint_y: None
+                height: 10
 
-                Label:
-                    text: "Groceries"
-                    color: 1,1,1,1
-                    bold: True
-                    font_size:'20sp'
+            RecycleView:
+                data: root.data_for_widgets
+                viewclass: 'ListItemWithCounter'
+                do_scroll_x: False
+                do_scroll_y: True
+
+                RecycleBoxLayout:
+                    default_size: None, dp(56)
+                    default_size_hint: 1, None
                     size_hint_y: None
-                    height: 30
-                    # size_hint_y:None
-                    # width: 460
-                StrokeButton:
-                    text:"i"
-                    # color: 0,0,1,0
-                    size_hint_x: None
-                    width: 40
-                    on_press: root.chartBtn()
-                        # Image:
-                        #     source: "pie.png"
-                        #     width: self.parent.width
-                        #     height: self.parent.height
-                        #     size_hint_y: None
-                        #     size_hint_x: None
-                        #     y: self.parent.y + .8* self.parent.height -.5 * self.parent.width/self.image_ratio
-                        #     x: self.parent.x
-                        #     keep_ratio: True
-                        #     allow_stretch: True
-                Label:
-                    text: ''
-                    size_hint_x: None
-                    width: 10
-            Label:
-                text:""
-            GridLayout: # add button, text input...
-                cols: 5
-                rows: 1
-                # size:root.width, 100
-                Label:
-                    text:''
-                    size_hint_x: None
-                    width: 10
-                MDIconButton:
-                    icon:"plus"
-                    id: addBtn
-                    # size_hint_x: None
-                    # width: 50
-                    on_press:
-                        root.addBtn(item.text)
-                    on_release:
-                        root.addBtnRelease()
-                    # Image:
-                    #     source: 'icons/plus.png'
-                    #     width: 20
-                    #     height: 20
-                    #     size_hint_y: None
-                    #     size_hint_x: None
-                    #     pos: self.parent.pos[0] + self.parent.width *0.5 -self.width/2, self.parent.pos[1] + self.parent.height *0.5 - self.height/2
-                    #     keep_ratio: True
-                    #     allow_stretch: True
-                MDTextField:
-                    hint_text: "New item..."
-                    id: item
-                    on_text_validate:
-                        root.addBtn(item.text)
-                        root.addBtnRelease()
-                # AnchorLayout:
-                #     anchor_y: 'top'
-                #     TextInput:
-                #         id: item
-                #         text:"Add an item..."
-                #         on_focus: self.text = ""
-                #         on_text_validate:
-                #             #addBtn.on_press = True
-                #             root.addBtn(item.text)
-                #             # addBtn.on_release=True
-                #         foreground_color: 1,1,1,1
-                #         font_size:'17sp'
-                #         bold: True
-                #         multiline:False
-                #         size_hint_y: None
-                #         height: self.minimum_height
-                #         size_hint_x:None
-                #         width: 250
-                #         background_color: (0,0,1,0)
-                #         cursor_color: (1,1,1,1)
-                #         canvas.before:
-                #
-                #             Line:
-                #                 points: self.x + 4, self.y + 5, self.x + 240 , self.y + 5
-                #                 width: 1
-                Button:
-                    text:"CA"
-                    # color:1,0,0,1
-                    size_hint_x: None
-                    width: 50
-                    background_color:[1,0,0,1]
-                    # opacity:1
-                    on_press:
-                        root.emptyBtn()
-                Button:
-                    text:"items"
-                    size_hint_x: None
-                    width: 50
-                    on_press:
-                        root.catalogueBtn()
-                        root.manager.current = "CatalogueWindow"
-                        root.manager.transition.direction = "left"
-        ScrollView:
-            do_scroll_x: False
-            do_scroll_y: True
-            # size: self.size
-            # canvas:
-            #     Color:
-            #         rgba: 1, 1, 1, 1
-            #     Rectangle:
-            #         pos: self.pos
-            #         size: self.size
-            MDList:
-                id: listContainer
-            # GridLayout:
-            #     cols: 2
-            #     id: listContainer
-            #     size_hint_y: None
-            #     height: self.minimum_height
-            #     row_default_height: '30dp'
-            #     row_force_default: True
-            #     canvas:
-            #         Color:
-            #             rgba: 0, 0, 1, 1
-            #         Rectangle:
-            #             pos: self.pos
-            #             size: self.size
+                    height: self.minimum_height
+                    orientation: 'vertical'
+                    spacing: dp(2)
 
-<CatalogueWindow>
-    name: "CatalogueWindow"
-    Button:
-        text:"Back"
-        on_press:
-            root.manager.current = "ListWindow"
-            root.manager.transition.direction = "right"
+# <ListWindow>:
+#     on_list_content: self.home.set_list_content(self.list_index, self.list_content)
+#     on_list_title: self.home.set_list_title(self.list_index, self.list_title)
+#
+#     item:item
+#     listGrid:listGrid
+#     tb:tb
+#     lineChart:lineChart
+#
+#     GridLayout:
+#         id:listGrid
+#         cols:1
+#         GridLayout:
+#             cols: 2
+#             padding: 10,0,10,0
+#             size_hint_y: None
+#             height: 60
+#             canvas.before:
+#                 Color:
+#                     rgba: 0, 0.4, 0, 1
+#                 Rectangle:
+#                     size: self.size
+#                     pos: self.pos
+#             MDIconButton:
+#                 icon: "keyboard-backspace"
+#                 valign: 'middle'
+#                 theme_text_color: "Custom"
+#                 text_color: 1,1,1,1
+#                 md_bg_color: 0, 0.4, 0, 1
+#                 on_release:
+#                     self.parent.parent.parent.parent.go_lists()
+#                     self.parent.parent.parent.parent.get_screen('lists').refresh_data(root.list_index, root.list_number)
+#                     root.save_items()
+#             MDLabel:
+#                 id: tb
+#                 text: root.list_title
+#                 color: 1,1,1,1
+#                 font_size: "20sp"
+#                 bold: True
+#
+#         MDLabel:
+#             # text: root.list_number
+#             color: 1,0,1,1
+#             size_hint_y: None
+#             height: 10
+#         GridLayout:
+#             cols:1
+#             padding: 10, 0, 10, 0
+#             GridLayout:
+#                 cols: 2
+#                 padding: 0,0,30,0
+#                 size_hint_y: None
+#                 height: 60
+#                 row_default_height: 60
+#                 row_force_default: True
+#                 canvas.before:
+#                     Color:
+#                         rgba: 0,0.4,0,1
+#                     RoundedRectangle:
+#                         pos: self.pos
+#                         size: self.size
+#                         radius: [3]
+#
+#                 MDIconButton:
+#                     icon: "plus"
+#                     pos_hint: {"center_x": .5, "center_y": .5}
+#                     theme_text_color: "Custom"
+#                     text_color: 1,1,1,1
+#                     on_release:
+#                         root.add_item(item.text)
+#                         root.add_item_to_database(item.text, '', '1', '0', '', '')
+#                         root.clearTxt(item.text)
+#                         root.save_items()
+#                 MDTextField:
+#                     id: item
+#                     hint_text: "New item..."
+#                     color_mode: "custom"
+#                     current_hint_text_color: 1,1,1,1
+#                     line_color_normal: 0.8,0.8,0.8,1
+#                     line_color_focus: 1,1,1,1
+#                     # id: item
+#                     on_text_validate:
+#                         root.add_item(item.text)
+#                         root.add_item_to_database(item.text, '', '1', '0', '', '')
+#                         root.clearTxt(item.text)
+#                         root.save_items()
+#
+#             MDLabel:
+#                 text: ''
+#                 size_hint_y: None
+#                 height: 10
+#
+#             BoxLayout:
+#                 id: lineChart
+#                 orientation: 'horizontal'
+#                 size_hint_y: None
+#                 height: 10
+#                 Label:
+#                     size_hint_x: 0.25
+#                     canvas.before:
+#                         Color:
+#                             rgba: 1,0,0,1
+#                         Rectangle:
+#                             size: self.size
+#                             pos: self.pos
+#                 Label:
+#                     size_hint_x: 0.25
+#                     canvas.before:
+#                         Color:
+#                             rgba: 0,1,0,1
+#                         Rectangle:
+#                             size: self.size
+#                             pos: self.pos
+#                 Label:
+#                     size_hint_x: 0.25
+#                     canvas.before:
+#                         Color:
+#                             rgba: 0,0,1,1
+#                         Rectangle:
+#                             size: self.size
+#                             pos: self.pos
+#                 Label:
+#                     size_hint_x: 0.25
+#                     canvas.before:
+#                         Color:
+#                             rgba: 1,1,0,1
+#                         Rectangle:
+#                             size: self.size
+#                             pos: self.pos
+#             RecycleView:
+#                 data: root.data_for_items
+#                 viewclass: 'ListItem'
+#                 do_scroll_x: False
+#                 do_scroll_y: True
+#                 RecycleBoxLayout:
+#                     default_size: None, dp(56)
+#                     default_size_hint: 1, None
+#                     size_hint_y: None
+#                     height: self.minimum_height
+#                     orientation: 'vertical'
+#                     spacing: dp(2)
+#             BoxLayout:
+#                 orientation: 'horizontal'
+#                 size_hint_y: None
+#                 height: 50
+#                 padding: [20,0,20,0]
+#                 canvas.before:
+#                     Color:
+#                         rgba: 0.5,0.5,0.5,0.5
+#                     Line:
+#                         points: (20, self.size[1], self.size[0], self.size[1])
+#                 Label:
+#                     text: 'To be spent:'
+#                     # bold: True
+#                     color: 0,0,0,0.8
+#                 # MDIconButton:
+#                 #
+#                 #     icon: 'currency-eur'
+#                 #     theme_text_color: 'Custom'
+#                 #     text_color: 0,0,0,0.8
+#                 #     # size_hint_x: 0.1
+#                 Label:
+#                     text: '\u20ac ' + root.tobespent(root.data)
+#                     color: 0,0,0,0.8
+                    # size_hint_x: 0.1
+                    # bold: True
+# <ChartWindow>:
+#     name: 'ChartWindow'
+#     id:ch
+#     box:box
+#     BoxLayout:
+#         id: box
+#         Button:
+#             text:'b'
+#             size_hint_y: 0.1
+
+<ChartWindow>:
+    name: 'ChartWindow'
+    id:ch
+    # box:box
+    BoxLayout:
+        id: box
+        orientation: 'vertical'
+        Button:
+            text:'b'
+            size_hint_y: 0.1
+            on_press:
+                root.updatePlot()
+        # MyFigure:
+        #     id:figureKa
+
+# <CalendarWindow>:
+#     name:'CalendarWindow'
+#     box:box
+#     GridLayout:
+#         name:'box'
+#         id:box
+#         cols:1
