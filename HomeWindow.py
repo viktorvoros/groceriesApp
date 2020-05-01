@@ -11,8 +11,6 @@ class HomeWindow(Screen):
 
     data = ListProperty()
     # list_number = StringProperty()
-
-
     def _get_data_for_widgets(self):
         return [{
             'list_index': index,
@@ -25,11 +23,10 @@ class HomeWindow(Screen):
 
     data_for_widgets = AliasProperty(_get_data_for_widgets, bind=['data'])
 
-
-
     def __init__(self,**kwargs):
         super(HomeWindow, self).__init__(**kwargs)
         self.load_lists()
+        
         # self.load_item_database()
         print(self.data)
         self.nb = 0

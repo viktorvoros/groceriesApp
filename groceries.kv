@@ -2,34 +2,8 @@
 #: include ScreenManagementHome.kv
 #: include ListItemWithCounter.kv
 #: include ListWindow.kv
-
-# <ListItemWithCounter>:
-#     canvas.before:
-#         Color:
-#             rgba: 1,1,1,1
-#         RoundedRectangle:
-#             pos: self.pos
-#             size: self.size
-#             radius: [3]
-#             # border: [10,10,10,10]
-#     text: root.list_title
-#     color: 0, 0,0,0
-#     on_release:
-#         root.parent.parent.parent.parent.parent.edit_list(root.list_index, root.list_number, root.list_screen)
-#         # print(root)
-#
-#     CounterLabel:
-#         text: root.list_number
-#         theme_text_color: "Custom"
-#         color: 0.4,0.4,0.4,1
-#
-#
-#     IconButtonRight:
-#         icon: 'delete'
-#         theme_text_color: "Custom"
-#         text_color: 0.4,0.4,0.4,1
-#         on_release:
-#             root.parent.parent.parent.parent.parent.del_list(root.list_index, root.list_screen)
+#: include RecipesWindow.kv
+#: include RecipeItem.kv
 
 <SwipeButton>:
     listItem:listItem
@@ -80,18 +54,26 @@
     orientation: 'horizontal'
     # on_press:
     #     root.parent.parent.parent.parent.parent.item_info(root.list_index, self.text)
-    IconButtonLeft:
-        icon: 'cart-outline'
-        on_release:
+    rv_key: 0
+    MDCheckbox:
+        # icon: 'cart-outline'
+        # active: root.item_checked
+        on_active:
             # print(root.list_index)
+            # print(root.item_checked)
+            # app.select_row(root.rv_key, self.active)
             root.parent.parent.parent.parent.parent.add_to_statistics(root.list_index, root.parent.parent.parent.parent.parent.data)
             root.parent.parent.parent.parent.parent.del_item(root.list_index)
             # app.refresh_data(root.list_index, root.parent.parent.parent.parent.parent.list_number)
 
     OneLineAvatarIconListItem:
         text: root.item_name
+
         on_press:
             root.parent.parent.parent.parent.parent.item_info(root.list_index, self.text)
+        CounterLabelLeft:
+            text: root.item_quantity
+
         CounterLabel:
             text: '\u20ac ' + root.item_price
             size_hint_x: None
@@ -252,20 +234,13 @@
                 size_hint_y: None
                 height: 10
 
-
-# <ScreenManagementHome>:
-#     id: sm
-#     transition: self.transition
-#     HomeWindow:
-    # ListWindow:
-
 <ScreenManagementChart>:
     ChartWindow:
 
 <MainWindow>:
 
-    BoxLayout:
-        orientation:'vertical'
+    # BoxLayout:
+    #     orientation:'vertical'
         # MDToolbar:
         #     # title: 'My lists'
         #     md_bg_color: 0, .4, 0, 1
@@ -273,38 +248,38 @@
         #     size_hint_y: None
         #     height: 20
 
-        MDBottomNavigation:
-            panel_color: 1, 1, 1, 1
+    MDBottomNavigation:
+        panel_color: 1, 1, 1, 1
 
-            MDBottomNavigationItem:
-                name: 'HomeWindow'
-                text: 'Home'
-                icon: 'home'
-                ScreenManagementHome:
+        MDBottomNavigationItem:
+            name: 'RecipesWindow'
+            text: 'Recipes'
+            icon: 'food'
+            RecipesWindow:
 
-            MDBottomNavigationItem:
-                name: 'ChartWindow'
-                text: 'Graphs'
-                icon: 'chart-bar'
-                ChartWindow:
+        MDBottomNavigationItem:
+            name: 'HomeWindow'
+            text: 'Home'
+            icon: 'home'
+            ScreenManagementHome:
 
-            MDBottomNavigationItem:
-                name: 'RecipesWindow'
-                text: 'Recipes'
-                icon: 'food'
-                RecipesWindow:
+        MDBottomNavigationItem:
+            name: 'ChartWindow'
+            text: 'Graphs'
+            icon: 'chart-bar'
+            ChartWindow:
 
-            MDBottomNavigationItem:
-                name: 'CalendarWindow'
-                text: 'Calendar'
-                icon: 'calendar'
-                CalendarWindow:
+        MDBottomNavigationItem:
+            name: 'CalendarWindow'
+            text: 'Calendar'
+            icon: 'calendar'
+            CalendarWindow:
 
-            MDBottomNavigationItem:
-                name: 'RecipesWindow'
-                text: 'Settings'
-                icon: 'settings'
-                SettingsWindow:
+        MDBottomNavigationItem:
+            name: 'RecipesWindow'
+            text: 'Settings'
+            icon: 'settings'
+            SettingsWindow:
 
 <HomeWindow>:
     name: 'lists'
@@ -382,182 +357,6 @@
                     orientation: 'vertical'
                     spacing: dp(2)
 
-# <ListWindow>:
-#     on_list_content: self.home.set_list_content(self.list_index, self.list_content)
-#     on_list_title: self.home.set_list_title(self.list_index, self.list_title)
-#
-#     item:item
-#     listGrid:listGrid
-#     tb:tb
-#     lineChart:lineChart
-#
-#     GridLayout:
-#         id:listGrid
-#         cols:1
-#         GridLayout:
-#             cols: 2
-#             padding: 10,0,10,0
-#             size_hint_y: None
-#             height: 60
-#             canvas.before:
-#                 Color:
-#                     rgba: 0, 0.4, 0, 1
-#                 Rectangle:
-#                     size: self.size
-#                     pos: self.pos
-#             MDIconButton:
-#                 icon: "keyboard-backspace"
-#                 valign: 'middle'
-#                 theme_text_color: "Custom"
-#                 text_color: 1,1,1,1
-#                 md_bg_color: 0, 0.4, 0, 1
-#                 on_release:
-#                     self.parent.parent.parent.parent.go_lists()
-#                     self.parent.parent.parent.parent.get_screen('lists').refresh_data(root.list_index, root.list_number)
-#                     root.save_items()
-#             MDLabel:
-#                 id: tb
-#                 text: root.list_title
-#                 color: 1,1,1,1
-#                 font_size: "20sp"
-#                 bold: True
-#
-#         MDLabel:
-#             # text: root.list_number
-#             color: 1,0,1,1
-#             size_hint_y: None
-#             height: 10
-#         GridLayout:
-#             cols:1
-#             padding: 10, 0, 10, 0
-#             GridLayout:
-#                 cols: 2
-#                 padding: 0,0,30,0
-#                 size_hint_y: None
-#                 height: 60
-#                 row_default_height: 60
-#                 row_force_default: True
-#                 canvas.before:
-#                     Color:
-#                         rgba: 0,0.4,0,1
-#                     RoundedRectangle:
-#                         pos: self.pos
-#                         size: self.size
-#                         radius: [3]
-#
-#                 MDIconButton:
-#                     icon: "plus"
-#                     pos_hint: {"center_x": .5, "center_y": .5}
-#                     theme_text_color: "Custom"
-#                     text_color: 1,1,1,1
-#                     on_release:
-#                         root.add_item(item.text)
-#                         root.add_item_to_database(item.text, '', '1', '0', '', '')
-#                         root.clearTxt(item.text)
-#                         root.save_items()
-#                 MDTextField:
-#                     id: item
-#                     hint_text: "New item..."
-#                     color_mode: "custom"
-#                     current_hint_text_color: 1,1,1,1
-#                     line_color_normal: 0.8,0.8,0.8,1
-#                     line_color_focus: 1,1,1,1
-#                     # id: item
-#                     on_text_validate:
-#                         root.add_item(item.text)
-#                         root.add_item_to_database(item.text, '', '1', '0', '', '')
-#                         root.clearTxt(item.text)
-#                         root.save_items()
-#
-#             MDLabel:
-#                 text: ''
-#                 size_hint_y: None
-#                 height: 10
-#
-#             BoxLayout:
-#                 id: lineChart
-#                 orientation: 'horizontal'
-#                 size_hint_y: None
-#                 height: 10
-#                 Label:
-#                     size_hint_x: 0.25
-#                     canvas.before:
-#                         Color:
-#                             rgba: 1,0,0,1
-#                         Rectangle:
-#                             size: self.size
-#                             pos: self.pos
-#                 Label:
-#                     size_hint_x: 0.25
-#                     canvas.before:
-#                         Color:
-#                             rgba: 0,1,0,1
-#                         Rectangle:
-#                             size: self.size
-#                             pos: self.pos
-#                 Label:
-#                     size_hint_x: 0.25
-#                     canvas.before:
-#                         Color:
-#                             rgba: 0,0,1,1
-#                         Rectangle:
-#                             size: self.size
-#                             pos: self.pos
-#                 Label:
-#                     size_hint_x: 0.25
-#                     canvas.before:
-#                         Color:
-#                             rgba: 1,1,0,1
-#                         Rectangle:
-#                             size: self.size
-#                             pos: self.pos
-#             RecycleView:
-#                 data: root.data_for_items
-#                 viewclass: 'ListItem'
-#                 do_scroll_x: False
-#                 do_scroll_y: True
-#                 RecycleBoxLayout:
-#                     default_size: None, dp(56)
-#                     default_size_hint: 1, None
-#                     size_hint_y: None
-#                     height: self.minimum_height
-#                     orientation: 'vertical'
-#                     spacing: dp(2)
-#             BoxLayout:
-#                 orientation: 'horizontal'
-#                 size_hint_y: None
-#                 height: 50
-#                 padding: [20,0,20,0]
-#                 canvas.before:
-#                     Color:
-#                         rgba: 0.5,0.5,0.5,0.5
-#                     Line:
-#                         points: (20, self.size[1], self.size[0], self.size[1])
-#                 Label:
-#                     text: 'To be spent:'
-#                     # bold: True
-#                     color: 0,0,0,0.8
-#                 # MDIconButton:
-#                 #
-#                 #     icon: 'currency-eur'
-#                 #     theme_text_color: 'Custom'
-#                 #     text_color: 0,0,0,0.8
-#                 #     # size_hint_x: 0.1
-#                 Label:
-#                     text: '\u20ac ' + root.tobespent(root.data)
-#                     color: 0,0,0,0.8
-                    # size_hint_x: 0.1
-                    # bold: True
-# <ChartWindow>:
-#     name: 'ChartWindow'
-#     id:ch
-#     box:box
-#     BoxLayout:
-#         id: box
-#         Button:
-#             text:'b'
-#             size_hint_y: 0.1
-
 <ChartWindow>:
     name: 'ChartWindow'
     id:ch
@@ -570,13 +369,3 @@
             size_hint_y: 0.1
             on_press:
                 root.updatePlot()
-        # MyFigure:
-        #     id:figureKa
-
-# <CalendarWindow>:
-#     name:'CalendarWindow'
-#     box:box
-#     GridLayout:
-#         name:'box'
-#         id:box
-#         cols:1

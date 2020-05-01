@@ -6,7 +6,7 @@ from kivy.properties import StringProperty, NumericProperty
 from kivy.properties import ListProperty, AliasProperty
 from HomeWindow import *
 from ScreenManagementHome import *
-from ItemPopup import *
+from ListItem import *
 
 class ListWindow(Screen):
     list_index = NumericProperty()
@@ -45,6 +45,20 @@ class ListWindow(Screen):
                 for index, item in enumerate(self.item_database)]
 
     data_for_items_database = AliasProperty(_get_data_for_item_database, bind=['item_database'])
+
+    def __init__(self,**kwargs):
+        super(ListWindow, self).__init__(**kwargs)
+        self.root = ScreenManagementHome()
+        # self.home = HomeWindow()
+        # self.ch = ChartWindow()
+        self.load_item_database()
+        self.load_items()
+        self.loadStatistics()
+        self.list_number = str(len(self.data))
+        self.item_number = 0
+        self.dairyLabel = 0.5
+        self.meatLabel = 0.5
+        print(self.name)
 
     def add_item_to_database(self, name, category, quantity, price, note, image):
         nam = []
@@ -87,19 +101,6 @@ class ListWindow(Screen):
         self.item_database = item_database
         # print('load: ', self.item_database)
 
-    def __init__(self,**kwargs):
-        super(ListWindow, self).__init__(**kwargs)
-        self.root = ScreenManagementHome()
-        # self.home = HomeWindow()
-        # self.ch = ChartWindow()
-        self.load_item_database()
-        self.load_items()
-        self.loadStatistics()
-        self.list_number = str(len(self.data))
-        self.item_number = 0
-        print(self.name)
-
-
     def add_item(self, textinput):
         database = self.item_database
         item_category = ''
@@ -118,6 +119,7 @@ class ListWindow(Screen):
         self.list_number = str(len(self.data))
         self.save_items()
         self.save_item_database()
+        self.lineChart()
 
     def item_info(self, item_index, item_name):
         self.load_items()
@@ -182,7 +184,7 @@ class ListWindow(Screen):
         add = []
         for i in range(0, len(self.data)):
             add.append(float(self.data[i]['quantity'])* float(self.data[i]['price']))
-        return str(sum(add))
+        return str(round(sum(add),2))
 
     def add_to_statistics(self, index, data):
         self.statistics_database.append(data[index])
@@ -201,3 +203,19 @@ class ListWindow(Screen):
     def saveStatistics(self):
         with open('data/stat.json', 'w') as fd:
             json.dump(self.statistics_database, fd)
+
+    def lineChart(self):
+        dairy = []
+        meat = []
+        for i in range(0, len(self.data)):
+            cat = self.data[i]['category']
+            if cat == 'Dairy':
+                dairy.append(float(self.data[i]['price'])* float(self.data[i]['quantity']))
+            if cat == 'Meat':
+                meat.append(float(self.data[i]['price'])* float(self.data[i]['quantity']))
+
+        spent = sum(dairy) + sum(meat)
+        print(sum(meat), sum(dairy))
+        self.ids.dairy.size_hint_x = str(sum(dairy)/spent)
+        # self.ids.lineChart.add_widget(Label(text='added'))
+        self.meat.size_hint_x= sum(meat)/spent

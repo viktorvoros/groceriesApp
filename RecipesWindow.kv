@@ -1,0 +1,27 @@
+#: include RecipeItem.kv
+
+<RecipesWindow>:
+    name: 'RecipesWindow'
+    BoxLayout:
+        orientation: 'vertical'
+        MDToolbar:
+            title: 'Gastro'
+            # size_hint_y: None
+            # height: self.minimum_height
+            md_bg_color: 0, 0.4, 0, 1
+            specific_text_color: 1,1,1,1
+
+        RecycleView:
+            data: root.data_for_recipes
+            viewclass: 'RecipeItem'
+            do_scroll_x: False
+            do_scroll_y: True
+
+            RecycleBoxLayout:
+                default_size: None, dp(200)
+                default_size_hint: 1, None
+                size_hint_y: None
+                height: self.minimum_height
+                orientation: 'vertical'
+                spacing: dp(2)
+                padding: [20,0,20,0]

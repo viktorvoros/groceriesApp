@@ -1,0 +1,76 @@
+<RecipeItem>:
+    BoxLayout:
+        orientation: 'vertical'
+        # size_hint_y: None
+        spacing: dp(2)
+        canvas.before:
+            Color:
+                rgba: 0,0,1,1
+            Rectangle:
+                size: self.size
+                pos: self.pos
+        Label:
+            text: root.r_category
+            halign: 'left'
+            size_hint_x: None
+            size_hint_y: 0.1
+            # height: self.minimum_height
+            color: 0,1,0,1
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: 0.7
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_x: 0.66
+                Label:
+                    text: root.r_title
+                    size_hint_x: None
+                    halign: 'left'
+                    # height: self.minimum_height
+                    color: 0,1,0,1
+                Label:
+                    text: root.r_content
+                    size_hint_x: None
+                    halign: 'left'
+                    # height: self.minimum_height
+                    color: 0,1,0,1
+            Label:
+                text: root.r_photo
+                color: 0,1,0,1
+                size_hint_x: 0.33
+                canvas.before:
+                    Color:
+                        rgba: 0,0,1,1
+                    Rectangle:
+                        size: self.size
+                        pos: self.pos
+        Label:
+            text: root.r_author
+            size_hint_y: 0.1
+            size_hint_x: None
+            halign: 'left'
+            # height: self.minimum_height
+            color: 0,1,0,1
+        BoxLayout:
+            size_hint_y: 0.1
+            orientation: 'horizontal'
+            # size_hint_y: None
+            # height: 20
+
+            Label:
+                text: root.r_date + ' | ' + root.r_time
+                size_hint_x: None
+                halign: 'left'
+
+            Widget:
+
+            MDIconButton:
+                icon: 'book'
+                # size_hint_x: 0.25
+            Label:
+                text: root.r_books
+                size_hint_x: None
+                halign: 'right'
+                # size_hint_x: 0.25
+                # height: self.minimum_height
+                color: 0,1,0,1

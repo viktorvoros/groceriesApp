@@ -1,5 +1,5 @@
 import kivy
-from kivy.uix.screenmanager import ScreenManager, Screen, SlideTransition
+from kivy.uix.screenmanager import ScreenManager
 
 class ScreenManagementHome(ScreenManager):
     transition = 'left'

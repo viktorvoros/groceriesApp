@@ -5,7 +5,9 @@
     item:item
     listGrid:listGrid
     tb:tb
-    lineChart:lineChart
+    lineChartBox:lineChartBox
+    dairy:dairy
+    meat:meat
 
     GridLayout:
         id:listGrid
@@ -90,43 +92,6 @@
                 size_hint_y: None
                 height: 10
 
-            BoxLayout:
-                id: lineChart
-                orientation: 'horizontal'
-                size_hint_y: None
-                height: 10
-                Label:
-                    size_hint_x: 0.25
-                    canvas.before:
-                        Color:
-                            rgba: 1,0,0,1
-                        Rectangle:
-                            size: self.size
-                            pos: self.pos
-                Label:
-                    size_hint_x: 0.25
-                    canvas.before:
-                        Color:
-                            rgba: 0,1,0,1
-                        Rectangle:
-                            size: self.size
-                            pos: self.pos
-                Label:
-                    size_hint_x: 0.25
-                    canvas.before:
-                        Color:
-                            rgba: 0,0,1,1
-                        Rectangle:
-                            size: self.size
-                            pos: self.pos
-                Label:
-                    size_hint_x: 0.25
-                    canvas.before:
-                        Color:
-                            rgba: 1,1,0,1
-                        Rectangle:
-                            size: self.size
-                            pos: self.pos
             RecycleView:
                 data: root.data_for_items
                 viewclass: 'ListItem'
@@ -139,6 +104,46 @@
                     height: self.minimum_height
                     orientation: 'vertical'
                     spacing: dp(2)
+            BoxLayout:
+                id: lineChartBox
+                orientation: 'horizontal'
+                size_hint_y: None
+                height: 10
+                # Label:
+                #     size_hint_x: 0.25
+                #     canvas.before:
+                #         Color:
+                #             rgba: 1,0,0,1
+                #         Rectangle:
+                #             size: self.size
+                #             pos: self.pos
+                # Label:
+                #     size_hint_x: 0.25
+                #     canvas.before:
+                #         Color:
+                #             rgba: 0,1,0,1
+                #         Rectangle:
+                #             size: self.size
+                #             pos: self.pos
+                Label:
+                    id: dairy
+                    size_hint_x: 0.5
+                    text: ''
+                    canvas.before:
+                        Color:
+                            rgba: 0,0,0.5,1
+                        Rectangle:
+                            size: self.size
+                            pos: self.pos
+                Label:
+                    id: meat
+                    size_hint_x: 0.5
+                    canvas.before:
+                        Color:
+                            rgba: 0.5,0,0,1
+                        Rectangle:
+                            size: self.size
+                            pos: self.pos
             BoxLayout:
                 orientation: 'horizontal'
                 size_hint_y: None
